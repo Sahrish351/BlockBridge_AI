@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { DemoBanner } from './components/common/DemoBanner';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 import { LandingPage } from './pages/LandingPage';
 import { ResourceCataloguePage } from './pages/ResourceCataloguePage';
@@ -15,6 +17,10 @@ import { AdminQueuePage } from './pages/AdminQueuePage';
 import { StandardsPage } from './pages/StandardsPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { PrivacyPage, TermsPage } from './pages/PrivacyTermsPages';
+
+import { LoginPage } from './pages/auth/LoginPage';
+import { RegisterPage } from './pages/auth/RegisterPage';
+import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -34,11 +40,47 @@ const AppContent: React.FC = () => {
           <Route path="/find-support" element={<FindSupportIntakePage />} />
           <Route path="/resources" element={<ResourceCataloguePage />} />
           <Route path="/resources/:id" element={<ResourceDetailPage />} />
-          <Route path="/app" element={<DashboardPage />} />
-          <Route path="/app/plans" element={<ActionPlanPage />} />
-          <Route path="/app/plans/:id" element={<ActionPlanPage />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          {/* Protected Application Routes */}
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/app/plans"
+            element={
+              <ProtectedRoute>
+                <ActionPlanPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/app/plans/:id"
+            element={
+              <ProtectedRoute>
+                <ActionPlanPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminQueuePage />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/community-partners" element={<CommunityPartnersPage />} />
-          <Route path="/admin" element={<AdminQueuePage />} />
           <Route path="/resource-standards" element={<StandardsPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
@@ -56,7 +98,9 @@ const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 };

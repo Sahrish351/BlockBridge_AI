@@ -94,3 +94,4 @@ BlockBridge AI operates strictly as an informational and navigation guide:
 - We do not request or store sensitive personal information such as Social Security numbers, banking passwords, or immigration papers.
 
 > **Disclaimer:** BlockBridge AI helps people discover and organize community resources. It is not a government agency, grant provider, legal adviser, or emergency service. Resource details and eligibility can change. Always confirm requirements, availability, and deadlines with the official provider. Recommendations are informational and do not guarantee eligibility or assistance.
+

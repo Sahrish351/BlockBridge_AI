@@ -10,10 +10,44 @@ import {
 } from '../types';
 import { VERIFIED_RESOURCES, INITIAL_ACTION_PLANS } from '../data/mockData';
 
-// In-memory / session state for live demo reactivity
+const API_BASE = 'http://127.0.0.1:8000';
+
+// Local storage helper for durable demo persistence
+function loadSavedIds(): string[] {
+  try {
+    const raw = localStorage.getItem('blockbridge_saved_resources');
+    return raw ? JSON.parse(raw) : ['res-001', 'res-002'];
+  } catch {
+    return ['res-001', 'res-002'];
+  }
+}
+
+function persistSavedIds(ids: string[]) {
+  try {
+    localStorage.setItem('blockbridge_saved_resources', JSON.stringify(ids));
+  } catch {}
+}
+
+function loadActionPlans(): ActionPlan[] {
+  try {
+    const raw = localStorage.getItem('blockbridge_action_plans');
+    return raw ? JSON.parse(raw) : [...INITIAL_ACTION_PLANS];
+  } catch {
+    return [...INITIAL_ACTION_PLANS];
+  }
+}
+
+function persistActionPlans(plans: ActionPlan[]) {
+  try {
+    localStorage.setItem('blockbridge_action_plans', JSON.stringify(plans));
+  } catch {}
+}
+
+// In-memory / session state initialized with persistent values
 let currentResources: Resource[] = [...VERIFIED_RESOURCES];
-let currentPlans: ActionPlan[] = [...INITIAL_ACTION_PLANS];
-let savedResourceIds: string[] = ['res-001', 'res-002'];
+let currentPlans: ActionPlan[] = loadActionPlans();
+let savedResourceIds: string[] = loadSavedIds();
+
 let submittedReports: ResourceReportSubmission[] = [
   {
     resource_id: 'res-012',
@@ -48,7 +82,6 @@ export const apiService = {
     coverage?: string;
     status?: string;
   }): Promise<Resource[]> {
-    // Artificial small delay for genuine UI feedback
     await new Promise((r) => setTimeout(r, 120));
     let list = [...currentResources];
 
@@ -89,9 +122,11 @@ export const apiService = {
   async toggleSaveResource(resourceId: string): Promise<boolean> {
     if (savedResourceIds.includes(resourceId)) {
       savedResourceIds = savedResourceIds.filter((id) => id !== resourceId);
+      persistSavedIds(savedResourceIds);
       return false; // now unsaved
     } else {
       savedResourceIds.push(resourceId);
+      persistSavedIds(savedResourceIds);
       return true; // now saved
     }
   },
@@ -114,10 +149,37 @@ export const apiService = {
     await new Promise((r) => setTimeout(r, 450));
 
     // Stage 4: Building next steps
-    onProgress?.('Building personalized next-step action checklists...', 98);
-    await new Promise((r) => setTimeout(r, 300));
+    onProgress?.('Building personalized next-step action checklists with Gemini AI...', 95);
+    
+    // Attempt backend AI endpoint with timeout
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4500);
 
-    // Deterministic catalogue matching
+      const resp = await fetch(`${API_BASE}/api/recommendations/ai`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(intake),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (resp.ok) {
+        const aiMatches: ResourceMatch[] = await resp.json();
+        if (Array.isArray(aiMatches) && aiMatches.length > 0) {
+          onProgress?.('Finalizing verified matches and action roadmaps...', 100);
+          await new Promise((r) => setTimeout(r, 200));
+          return aiMatches;
+        }
+      }
+    } catch {
+      // Backend not running or timeout; seamlessly use grounded deterministic matcher
+    }
+
+    onProgress?.('Finalizing verified matches and action roadmaps...', 100);
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Grounded catalogue matching fallback
     const query = intake.description.toLowerCase();
     const isSmallBusiness = intake.user_type === 'small_business' || query.includes('business') || query.includes('store') || query.includes('startup');
     
@@ -136,7 +198,6 @@ export const apiService = {
       matched = currentResources.slice(0, 4);
     }
 
-    // Transform into verified ResourceMatch items with clear provenance and uncertainty labels
     return matched.map((resource) => {
       const whyFit: string[] = [];
       const whatWeKnow: string[] = [];
@@ -236,6 +297,17 @@ export const apiService = {
     };
 
     currentPlans.unshift(newPlan);
+    persistActionPlans(currentPlans);
+
+    // Optional background sync with backend
+    try {
+      fetch(`${API_BASE}/api/action-plans`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPlan)
+      }).catch(() => {});
+    } catch {}
+
     return newPlan;
   },
 
@@ -257,6 +329,7 @@ export const apiService = {
     if (dueDate !== undefined) task.due_date = dueDate;
     plan.updated_at = new Date().toISOString();
 
+    persistActionPlans(currentPlans);
     return { ...task };
   },
 
@@ -271,6 +344,7 @@ export const apiService = {
 
     plan.tasks.push(newStep);
     plan.updated_at = new Date().toISOString();
+    persistActionPlans(currentPlans);
     return newStep;
   },
 
@@ -280,6 +354,7 @@ export const apiService = {
 
     plan.tasks = plan.tasks.filter((t) => t.id !== stepId);
     plan.updated_at = new Date().toISOString();
+    persistActionPlans(currentPlans);
     return true;
   },
 
@@ -287,6 +362,15 @@ export const apiService = {
   async submitResourceReport(report: ResourceReportSubmission): Promise<boolean> {
     await new Promise((r) => setTimeout(r, 200));
     submittedReports.push(report);
+
+    try {
+      fetch(`${API_BASE}/api/resource-reports`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(report)
+      }).catch(() => {});
+    } catch {}
+
     return true;
   },
 
@@ -299,6 +383,15 @@ export const apiService = {
       status: 'Pending',
       submitted_at: new Date().toISOString().split('T')[0]
     });
+
+    try {
+      fetch(`${API_BASE}/api/partner/submissions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission)
+      }).catch(() => {});
+    } catch {}
+
     return newId;
   },
 
@@ -317,7 +410,6 @@ export const apiService = {
     sub.status = action;
 
     if (action === 'Approved') {
-      // Add to public catalogue
       currentResources.push({
         id: `res-approved-${Date.now()}`,
         name: sub.resource_name,

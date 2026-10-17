@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight, Bookmark } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, ArrowRight, Bookmark, LogIn, LogOut } from 'lucide-react';
 import { Button } from './Button';
+import { useAuth } from '../../context/AuthContext';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, role, signOut } = useAuth();
 
   const navLinks = [
     { label: 'How it Works', path: '/how-it-works' },
@@ -14,9 +17,18 @@ export const Navbar: React.FC = () => {
     { label: 'Verification Standards', path: '/resource-standards' },
   ];
 
+  if (role === 'admin') {
+    navLinks.push({ label: 'Moderation Queue', path: '/admin' });
+  }
+
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -81,20 +93,51 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Action Buttons */}
           <div className="hidden sm:flex items-center gap-3">
-            <Link to="/app">
-              <Button variant="ghost" size="sm" leftIcon={<Bookmark className="w-4 h-4 text-bb-ink-muted" />}>
-                <span>My Saved & Plans</span>
-              </Button>
-            </Link>
-            <Link to="/find-support">
-              <Button
-                variant="primary"
-                size="md"
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-              >
-                Find Support
-              </Button>
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-2.5">
+                <Link to="/app">
+                  <Button variant="ghost" size="sm" leftIcon={<Bookmark className="w-4 h-4 text-bb-brand" />}>
+                    <span>Workspace</span>
+                  </Button>
+                </Link>
+
+                <div className="flex items-center gap-2 pl-2 border-l border-bb-line text-xs">
+                  <div className="flex flex-col text-right">
+                    <span className="font-bold text-bb-ink leading-tight line-clamp-1 max-w-[120px]">
+                      {profile?.display_name || user.email?.split('@')[0]}
+                    </span>
+                    <span className="text-[10px] uppercase font-bold text-bb-brand">
+                      {role.replace('_', ' ')}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="p-1.5 rounded-lg text-bb-ink-muted hover:text-bb-danger hover:bg-red-50 transition-colors"
+                    title="Sign Out"
+                    aria-label="Sign Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link to="/login">
+                  <Button variant="ghost" size="sm" leftIcon={<LogIn className="w-4 h-4" />}>
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/find-support">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                  >
+                    Find Support
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Hamburger */}
@@ -135,23 +178,52 @@ export const Navbar: React.FC = () => {
               </Link>
             ))}
             <div className="pt-3 border-t border-bb-line mt-3 space-y-2">
-              <Link
-                to="/app"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-medium text-bb-ink hover:bg-bb-surface-soft"
-              >
-                <Bookmark className="w-4 h-4 text-bb-brand" />
-                <span>My Saved Resources & Action Plans</span>
-              </Link>
-              <Link
-                to="/find-support"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full block"
-              >
-                <Button variant="primary" size="lg" className="w-full">
-                  Start Finding Support
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <div className="px-3 py-1 flex items-center justify-between text-xs text-bb-ink-muted">
+                    <span>Signed in as <strong>{profile?.display_name}</strong> ({role})</span>
+                  </div>
+                  <Link
+                    to="/app"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-medium text-bb-ink hover:bg-bb-surface-soft"
+                  >
+                    <Bookmark className="w-4 h-4 text-bb-brand" />
+                    <span>My Action Plans & Saved Items</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-lg text-base font-medium text-bb-danger hover:bg-red-50"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block"
+                  >
+                    <Button variant="secondary" size="md" className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link
+                    to="/find-support"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block"
+                  >
+                    <Button variant="primary" size="md" className="w-full">
+                      Start Finding Support
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
