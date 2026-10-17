@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Canvas & Surfaces */
+    --bb-bg: #FAF8F3;
+    --bb-surface: #FFFFFF;
+    --bb-surface-soft: #F1F3EC;
+    --bb-surface-hover: #F6F5EE;
+
+    /* Typography / Inks */
+    --bb-ink: #202720;
+    --bb-ink-muted: #626A63;
+    --bb-ink-subtle: #8A948C;
+
+    /* Brand Primary */
+    --bb-brand: #246B52;
+    --bb-brand-hover: #18523F;
+    --bb-brand-soft: #DCEBE1;
+    --bb-brand-border: #BCD4C4;
+
+    /* Accents */
+    --bb-coral: #E98770;
+    --bb-coral-hover: #D7735C;
+    --bb-coral-soft: #FBE7E0;
+    --bb-butter: #F5E8B8;
+    --bb-butter-soft: #FCF7E6;
+
+    /* Borders & Lines */
+    --bb-line: #E5E5DC;
+    --bb-line-strong: #D1CFBF;
+
+    /* Functional / Status Tokens */
+    --bb-success: #237A4B;
+    --bb-success-soft: #E3F2E9;
+    --bb-warning: #98651B;
+    --bb-warning-soft: #FCF4E3;
+    --bb-danger: #B33A3A;
+    --bb-danger-soft: #FDE8E8;
+    --bb-info: #315F91;
+    --bb-info-soft: #E9F1FA;
+
+    /* Focus */
+    --bb-focus: #276EF1;
+  }
+
+  body {
+    background-color: var(--bb-bg);
+    color: var(--bb-ink);
+    font-family: 'DM Sans', Inter, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'DM Serif Display', Fraunces, Georgia, serif;
+  }
+
+  /* Accessibility focus ring */
+  *:focus-visible {
+    outline: 2px solid var(--bb-focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Print styling for action plan export */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

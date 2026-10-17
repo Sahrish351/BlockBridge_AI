@@ -1,0 +1,151 @@
+[
+  {
+    "id": "scenario-small-business",
+    "title": "Scenario A: Neighborhood Small Business Owner",
+    "persona": {
+      "name": "Marcus Vance",
+      "business_name": "Vance Community Roasters & Café",
+      "location": "Atlanta, GA (30310 — West End / Historic Southwest Atlanta)",
+      "type": "Small Business Owner",
+      "stage": "2 Years in Operation",
+      "need_summary": "Looking for non-dilutive grant funding or low-interest loan to upgrade espresso machinery and expand commercial kitchen space, plus guidance on corporate catering contracts."
+    },
+    "user_prompt": "I run a small neighborhood café in West End Atlanta and need help finding business coaching and funding opportunities to expand our kitchen equipment.",
+    "structured_intake": {
+      "user_type": "small_business",
+      "location": "Atlanta, GA",
+      "postal_code": "30310",
+      "category": "Small Business Support",
+      "business_stage": "Growth Stage (2+ years)",
+      "urgency": "Standard",
+      "needs": ["capital-readiness", "microloan", "technical-assistance", "supplier-diversity"]
+    },
+    "matched_resource_ids": [
+      "res-001",
+      "res-002",
+      "res-003",
+      "res-008",
+      "res-010"
+    ],
+    "explanation_notes": [
+      "Matched Invest Atlanta Opportunity Fund due to commercial location inside City of Atlanta limits and 2-year operational history.",
+      "Matched Russell Innovation Center (RICE) for capital-readiness coaching tailored to Black entrepreneurs.",
+      "Flagged Invest Atlanta municipal tax compliance as an item Marcus must confirm before applying."
+    ],
+    "demo_action_plan": {
+      "title": "Vance Roasters Expansion & Capital Plan",
+      "goal": "Prepare financial documentation, apply for Invest Atlanta Opportunity loan, and enroll in RICE capital cohort.",
+      "tasks": [
+        {
+          "id": "task-sb-1",
+          "title": "Confirm City of Atlanta Municipal Business License & Tax Status",
+          "description": "Verify current commercial license is up-to-date with City of Atlanta Department of Finance.",
+          "status": "Completed",
+          "due_date": "2026-10-25",
+          "source_url": "https://www.atlantaga.gov",
+          "notes": "Checked city portal on Oct 10 — license is active with zero outstanding municipal fees."
+        },
+        {
+          "id": "task-sb-2",
+          "title": "Compile Last 2 Years Business Tax Returns & 3 Months Bank Statements",
+          "description": "Gather financial statements required for Invest Atlanta & ACE loan applications.",
+          "status": "In Progress",
+          "due_date": "2026-10-30",
+          "source_url": "https://www.investatlanta.com/businesses/small-businesses",
+          "notes": "Bookkeeper generated P&L; downloading September bank statement PDF."
+        },
+        {
+          "id": "task-sb-3",
+          "title": "Book Free 1-on-1 Mentor Consultation with SCORE Atlanta",
+          "description": "Review loan application deck and espresso equipment quotes with an SBA volunteer advisor.",
+          "status": "Not Started",
+          "due_date": "2026-11-05",
+          "source_url": "https://www.score.org/atlanta",
+          "notes": ""
+        },
+        {
+          "id": "task-sb-4",
+          "title": "Submit Intake Application for RICE Business Growth Academy",
+          "description": "Apply for the quarterly cohort to access mentoring, investor pitch prep, and peer founder network.",
+          "status": "Not Started",
+          "due_date": "2026-11-15",
+          "source_url": "https://russellcenter.org/apply",
+          "notes": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "scenario-resident-relief",
+    "title": "Scenario B: Resident Seeking Utility & Essential Support",
+    "persona": {
+      "name": "Keisha Jenkins",
+      "location": "Atlanta, GA (30314 — English Avenue / Bankhead)",
+      "type": "Resident / Community Member",
+      "need_summary": "Experiencing sudden seasonal heating bill spikes and looking for emergency energy assistance and family grocery resources while completing job training."
+    },
+    "user_prompt": "I need help with utility bills and grocery assistance while I look for a new job in Atlanta.",
+    "structured_intake": {
+      "user_type": "resident",
+      "location": "Atlanta, GA",
+      "postal_code": "30314",
+      "category": "Utilities & Household Bills",
+      "urgency": "Urgent",
+      "needs": ["energy-assistance", "electric-bill", "groceries", "workforce-training"]
+    },
+    "matched_resource_ids": [
+      "res-004",
+      "res-005",
+      "res-006",
+      "res-009"
+    ],
+    "explanation_notes": [
+      "Matched LIHEAP Energy Assistance because Keisha is responsible for heating costs in Georgia.",
+      "Identified that household gross income must be confirmed at or below 60% Georgia median income.",
+      "Paired with Atlanta Community Food Bank for zero-cost immediate emergency food access without income paperwork.",
+      "Added Urban League of Greater Atlanta Career Center for tuition-free certification programs."
+    ],
+    "demo_action_plan": {
+      "title": "Keisha's Immediate Relief & Career Stability Plan",
+      "goal": "Secure utility bill grant via LIHEAP, access neighborhood fresh food, and enroll in certified job training.",
+      "tasks": [
+        {
+          "id": "task-res-1",
+          "title": "Gather Heating & Electric Bills + Proof of 30-Day Income for LIHEAP",
+          "description": "Collect utility statements with account numbers and proof of income for all household members.",
+          "status": "In Progress",
+          "due_date": "2026-10-22",
+          "source_url": "https://gateway.ga.gov",
+          "notes": "Georgia Power bill downloaded; need one more paystub."
+        },
+        {
+          "id": "task-res-2",
+          "title": "Text 'FINDFOOD' to 888-976-2232 for Nearest Friday Pantry Distribution",
+          "description": "Locate walking-distance Atlanta Community Food Bank emergency grocery pantry in 30314.",
+          "status": "Completed",
+          "due_date": "2026-10-18",
+          "source_url": "https://www.acfb.org/find-food/",
+          "notes": "Text received: distribution scheduled this Friday at 10:00 AM at local neighborhood center."
+        },
+        {
+          "id": "task-res-3",
+          "title": "Submit Online Application on Georgia Gateway for LIHEAP Grant",
+          "description": "Submit application before seasonal funds are exhausted for direct account credit.",
+          "status": "Not Started",
+          "due_date": "2026-10-26",
+          "source_url": "https://gateway.ga.gov",
+          "notes": ""
+        },
+        {
+          "id": "task-res-4",
+          "title": "Attend Urban League or Goodwill Career Training Orientation",
+          "description": "Explore tuition-free healthcare or IT certification tracks with career placement.",
+          "status": "Not Started",
+          "due_date": "2026-11-02",
+          "source_url": "https://ulgatl.org",
+          "notes": ""
+        }
+      ]
+    }
+  }
+]

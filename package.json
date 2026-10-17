@@ -1,0 +1,15 @@
+{
+  "name": "blockbridge-ai-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BlockBridge AI - Community Resource Navigator for Residents and Small Businesses",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=blockbridge-web",
+    "build": "npm run build --workspace=blockbridge-web",
+    "web:dev": "npm run dev --workspace=blockbridge-web",
+    "web:build": "npm run build --workspace=blockbridge-web"
+  }
+}
