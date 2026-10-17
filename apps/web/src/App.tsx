@@ -11,7 +11,6 @@ import { FindSupportIntakePage } from './pages/FindSupportIntakePage';
 import { ActionPlanPage } from './pages/ActionPlanPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CommunityPartnersPage } from './pages/CommunityPartnersPage';
-import { AdminQueuePage } from './pages/AdminQueuePage';
 import { StandardsPage } from './pages/StandardsPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { PrivacyPage, TermsPage } from './pages/PrivacyTermsPages';
@@ -20,7 +19,51 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 
+import { useLocation } from 'react-router-dom';
+
 const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isDashboardRoute = location.pathname.startsWith('/app') || location.pathname.startsWith('/admin');
+
+  if (isDashboardRoute) {
+    return (
+      <Routes>
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/plans"
+          element={
+            <ProtectedRoute>
+              <ActionPlanPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/plans/:id"
+          element={
+            <ProtectedRoute>
+              <ActionPlanPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-bb-bg text-bb-ink">
       <Navbar />
@@ -36,40 +79,6 @@ const AppContent: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
-          {/* Protected Application Routes */}
-          <Route
-            path="/app"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/app/plans"
-            element={
-              <ProtectedRoute>
-                <ActionPlanPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/app/plans/:id"
-            element={
-              <ProtectedRoute>
-                <ActionPlanPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminQueuePage />
-              </ProtectedRoute>
-            }
-          />
 
           <Route path="/community-partners" element={<CommunityPartnersPage />} />
           <Route path="/resource-standards" element={<StandardsPage />} />
