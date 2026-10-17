@@ -1,228 +1,165 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, 
   Sparkles, 
-  CheckCircle2, 
   HelpCircle, 
   Compass, 
   FileCheck, 
-  ShieldCheck,
+  ShieldCheck, 
   ExternalLink,
   MapPin,
   Calendar,
-  Check
+  Sprout,
+  Search,
+  FileText,
+  Target,
+  Users,
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { VERIFIED_RESOURCES } from '../data/mockData';
 
 export const LandingPage: React.FC = () => {
-  // Interactive mini-checklist on hero preview
-  const [checkedTasks, setCheckedTasks] = useState<Record<string, boolean>>({
-    't1': true,
-    't2': true,
-    't3': false
-  });
+  const navigate = useNavigate();
+  const [assistQuery, setAssistQuery] = useState('');
 
-  const toggleTask = (id: string) => {
-    setCheckedTasks(prev => ({ ...prev, [id]: !prev[id] }));
+  const handleAIAssistSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = assistQuery.trim() || 'Small business support and grants in Atlanta';
+    navigate(`/find-support?description=${encodeURIComponent(query)}`);
   };
 
-  const completedCount = Object.values(checkedTasks).filter(Boolean).length;
   const featuredResources = VERIFIED_RESOURCES.slice(0, 3);
 
   return (
     <div className="space-y-24 sm:space-y-32">
-      {/* SECTION 1: SPLIT EDITORIAL HERO WITH REAL PHOTOGRAPHY */}
-      <section className="relative pt-6 sm:pt-12 lg:pt-16 pb-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+      {/* SECTION 1: EDITORIAL HERO MATCHING EXACT REFERENCE IMAGE */}
+      <section className="relative pt-6 sm:pt-10 lg:pt-12 pb-8 sm:pb-12 overflow-hidden bg-[#FAF8F3]">
+        {/* Botanical leaf accent at bottom-left corner matching reference */}
+        <div className="hidden lg:block absolute -bottom-2 left-0 w-36 h-28 pointer-events-none opacity-40 select-none z-0">
+          <img
+            src="/assets/images/botanical-accent.png"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start lg:items-center">
             
-            {/* Left Column: Editorial Headline & Actions */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-bb-brand-soft text-bb-brand text-xs font-bold tracking-wider uppercase border border-bb-brand-border">
-                <span className="w-2.5 h-2.5 rounded-full bg-bb-brand animate-pulse"></span>
+            {/* Left Column: Text & Calls to Action (Vertically positioned near top) */}
+            <div className="lg:col-span-6 space-y-6 sm:space-y-7 pt-2 lg:pt-0">
+              
+              {/* Sage-green pill badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DCEBE1] text-[#246B52] text-xs font-bold tracking-wider uppercase shadow-xs">
+                <Sprout className="w-3.5 h-3.5 text-[#246B52] flex-shrink-0" />
                 <span>Community Support, Made Actionable</span>
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-bb-ink leading-[1.08] tracking-tight">
+              {/* Large, bold, elegant serif headline on two lines */}
+              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[70px] xl:text-[76px] text-[#202720] leading-[1.05] tracking-tight">
                 Find the support. <br />
-                <span className="text-bb-brand italic font-normal">Take the next step.</span>
+                <span className="text-[#246B52] italic font-serif font-normal">
+                  Take the next step.
+                </span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-bb-ink-muted leading-relaxed max-w-2xl font-normal">
-                BlockBridge AI helps residents and neighborhood small businesses navigate fragmented public programs, commercial grants, and utility relief. We turn verified public records into an actionable, prioritized roadmap—with zero invented eligibility.
+              {/* Supporting Copy */}
+              <p className="text-base sm:text-lg lg:text-[18.5px] text-[#4A554A] leading-relaxed max-w-xl font-normal">
+                BlockBridge AI helps residents and small businesses navigate fragmented public programs, commercial grants, and utility relief. We turn verified public records into an actionable, prioritized plan — so you can move forward with confidence.
               </p>
 
-              {/* Primary Actions */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-                <Link to="/find-support">
-                  <Button variant="primary" size="lg" className="w-full sm:w-auto shadow-md" rightIcon={<ArrowRight className="w-5 h-5" />}>
-                    Find Support Now
-                  </Button>
+              {/* Two Horizontally Aligned CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3.5 pt-1">
+                <Link
+                  to="/resources"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#246B52] hover:bg-[#1B533F] text-white text-sm font-semibold shadow-sm hover:shadow-md transition-all group cursor-pointer"
+                >
+                  <Search className="w-4 h-4 text-white/90" />
+                  <span>Explore Resources</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
-                <Link to="/find-support?scenario=scenario-small-business">
-                  <Button variant="secondary" size="lg" className="w-full sm:w-auto" leftIcon={<Sparkles className="w-4 h-4 text-bb-coral" />}>
-                    Explore Live Demo
-                  </Button>
+
+                <Link
+                  to="/find-support"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white hover:bg-[#FAF8F3] text-[#202720] border border-[#D5D0C5] hover:border-[#246B52] text-sm font-semibold shadow-sm transition-all group cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-[#246B52]" />
+                  <span>Try AI Assistant</span>
+                  <ArrowRight className="w-4 h-4 text-bb-ink-muted transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
 
-              {/* Trust Reassurance Line */}
-              <div className="pt-2 flex flex-wrap items-center gap-y-2 gap-x-4 text-xs sm:text-sm text-bb-ink-muted">
-                <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-bb-brand flex-shrink-0" />
-                  <span>Source-backed records</span>
-                </span>
-                <span className="text-bb-line-strong hidden sm:inline">•</span>
-                <span className="flex items-center gap-1.5">
-                  <HelpCircle className="w-4 h-4 text-amber-700 flex-shrink-0" />
-                  <span>Transparent eligibility unknowns</span>
-                </span>
-                <span className="text-bb-line-strong hidden sm:inline">•</span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-bb-brand flex-shrink-0" />
-                  <span>Trackable action plans</span>
-                </span>
+              {/* Trust-Feature Row with 4 Items */}
+              <div className="pt-4 border-t border-[#EAE6DD] flex flex-wrap items-center gap-x-6 gap-y-3 text-xs sm:text-sm text-[#202720] font-medium">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#246B52] flex-shrink-0" />
+                  <span>Verified Sources</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[#246B52] flex-shrink-0" />
+                  <span>Real Programs</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-[#246B52] flex-shrink-0" />
+                  <span>Actionable Plans</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#246B52] flex-shrink-0" />
+                  <span>Stronger Communities</span>
+                </div>
               </div>
             </div>
 
-            {/* Right Column: Hero Real Photography & Overlapping Product Preview */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-lg lg:max-w-none">
-                {/* Decorative warm aura */}
-                <div className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-bb-coral-soft to-bb-brand-soft/60 blur-xl opacity-80 transform -rotate-1"></div>
-                
-                {/* Real High-Quality Photography Frame */}
-                <div className="relative rounded-3xl overflow-hidden shadow-elevated border border-bb-line bg-stone-100 aspect-[4/3] sm:aspect-[16/11]">
+            {/* Right Column: Dominant Photography & Single Floating AI Card */}
+            <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-[560px]">
+                {/* Visual composition with soft sage curves & authentic local merchant photograph */}
+                <div className="relative w-full overflow-hidden rounded-3xl shadow-sm">
                   <img
-                    src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1200&q=80"
-                    alt="A friendly local shop owner welcoming a customer in a warm neighborhood storefront"
-                    className="w-full h-full object-cover"
+                    src="/assets/images/hero-right-visual.png"
+                    alt="Confident small-business owner in a welcoming neighborhood shop with chalkboard sign"
+                    className="w-full h-auto object-cover select-none"
                     loading="eager"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
-                  
-                  {/* Photo Caption Badge */}
-                  <div className="absolute bottom-3 left-3 right-3 text-white text-xs flex items-center justify-between">
-                    <span className="font-medium drop-shadow-sm">Independent storefronts & local community support</span>
-                    <span className="text-[11px] opacity-80">Atlanta, GA</span>
-                  </div>
-                </div>
 
-                {/* Overlapping Floating Product Preview Card */}
-                <div className="relative -mt-16 sm:-mt-20 mx-4 sm:mx-6 bg-white rounded-3xl border border-bb-line p-5 sm:p-6 shadow-2xl space-y-4">
-                  {/* Preview Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-bb-line">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-bb-brand animate-pulse"></span>
-                      <span className="text-xs font-bold text-bb-ink uppercase tracking-wider">
-                        Interactive Plan Preview
+                  {/* Single Floating AI Assistance Card positioned in lower-right area */}
+                  <div className="absolute right-3 sm:right-5 bottom-3 sm:bottom-5 w-[92%] sm:w-[325px] md:w-[340px] bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-bb-line/80 transition-all hover:shadow-2xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#202720]">
+                        <Sparkles className="w-4 h-4 text-[#246B52]" />
+                        <span>AI-Powered Assistance</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E8F5EE] text-[#1B5E3C]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#246B52] animate-pulse"></span>
+                        Live
                       </span>
                     </div>
-                    <Badge type="verification" status="Verified" size="sm" />
-                  </div>
 
-                  {/* Resource Card Snippet */}
-                  <div className="p-3.5 rounded-2xl bg-bb-bg border border-bb-line space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-bold text-bb-brand uppercase tracking-wider">
-                        Invest Atlanta
-                      </span>
-                      <span className="text-bb-ink-muted">Opportunity Fund</span>
-                    </div>
-                    <h4 className="font-serif font-bold text-base text-bb-ink leading-tight">
-                      Small Business Opportunity Microloan & Grant
-                    </h4>
-                    <p className="text-xs text-bb-ink-muted line-clamp-1">
-                      Low-interest gap financing and grants for local businesses in Atlanta commercial corridors.
+                    <p className="text-[11px] sm:text-xs text-bb-ink-muted leading-relaxed mt-1.5 mb-3">
+                      Tell us your needs and get personalized resource matches with next steps.
                     </p>
+
+                    <form onSubmit={handleAIAssistSubmit} className="relative flex items-center bg-[#FAF8F3] border border-[#D5D0C5] rounded-full p-1 pl-3.5 shadow-inner focus-within:border-[#246B52] focus-within:ring-2 focus-within:ring-[#246B52]/20 transition-all">
+                      <input
+                        type="text"
+                        value={assistQuery}
+                        onChange={(e) => setAssistQuery(e.target.value)}
+                        placeholder="I need help with..."
+                        className="w-full text-xs text-[#202720] bg-transparent focus:outline-none placeholder:text-bb-ink-subtle"
+                      />
+                      <button
+                        type="submit"
+                        className="w-7 h-7 rounded-full bg-[#246B52] hover:bg-[#1B533F] text-white flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer shadow-sm ml-1"
+                        aria-label="Submit search to AI assistant"
+                      >
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </form>
                   </div>
-
-                  {/* Connected Checklist Progress */}
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-bb-ink">Your Action Checklist</span>
-                      <span className="font-bold text-bb-brand">{completedCount} of 3 Steps Completed</span>
-                    </div>
-                    <div className="w-full bg-bb-line h-2.5 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-bb-brand h-full rounded-full transition-all duration-300"
-                        style={{ width: `${(completedCount / 3) * 100}%` }}
-                      ></div>
-                    </div>
-
-                    {/* Interactive Tasks */}
-                    <div className="space-y-2 pt-1 text-xs">
-                      <div 
-                        onClick={() => toggleTask('t1')}
-                        className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
-                          checkedTasks['t1'] 
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
-                            : 'bg-white border-bb-line text-bb-ink hover:bg-bb-surface-soft'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-4 h-4 rounded-md flex items-center justify-center border ${
-                            checkedTasks['t1'] ? 'bg-bb-success border-bb-success text-white' : 'border-bb-line-strong'
-                          }`}>
-                            {checkedTasks['t1'] && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className={checkedTasks['t1'] ? 'line-through text-bb-ink-muted' : 'font-medium'}>
-                            Verify City of Atlanta Business License
-                          </span>
-                        </div>
-                        <span className="text-[10px] uppercase font-bold text-bb-success">Done</span>
-                      </div>
-
-                      <div 
-                        onClick={() => toggleTask('t2')}
-                        className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
-                          checkedTasks['t2'] 
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
-                            : 'bg-white border-bb-line text-bb-ink hover:bg-bb-surface-soft'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-4 h-4 rounded-md flex items-center justify-center border ${
-                            checkedTasks['t2'] ? 'bg-bb-success border-bb-success text-white' : 'border-bb-line-strong'
-                          }`}>
-                            {checkedTasks['t2'] && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className={checkedTasks['t2'] ? 'line-through text-bb-ink-muted' : 'font-medium'}>
-                            Download 3 Months Bank Statements
-                          </span>
-                        </div>
-                        <span className="text-[10px] uppercase font-bold text-bb-success">Done</span>
-                      </div>
-
-                      <div 
-                        onClick={() => toggleTask('t3')}
-                        className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
-                          checkedTasks['t3'] 
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
-                            : 'bg-white border-bb-line text-bb-ink hover:bg-bb-surface-soft'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-4 h-4 rounded-md flex items-center justify-center border ${
-                            checkedTasks['t3'] ? 'bg-bb-success border-bb-success text-white' : 'border-bb-line-strong'
-                          }`}>
-                            {checkedTasks['t3'] && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className={checkedTasks['t3'] ? 'line-through text-bb-ink-muted' : 'font-medium'}>
-                            Submit Loan Intake on Official Portal
-                          </span>
-                        </div>
-                        <span className="text-[10px] uppercase font-bold text-amber-800">Next Step</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-center text-bb-ink-subtle">
-                    Click items to toggle completion • Full roadmap persists in your workspace
-                  </p>
                 </div>
               </div>
             </div>

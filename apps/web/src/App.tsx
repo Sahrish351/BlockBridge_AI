@@ -1,9 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
-import { DemoBanner } from './components/common/DemoBanner';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 import { LandingPage } from './pages/LandingPage';
@@ -23,15 +21,8 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 
 const AppContent: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleLoadScenario = (scenarioId: string) => {
-    navigate(`/find-support?scenario=${scenarioId}`);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-bb-bg text-bb-ink">
-      <DemoBanner onLoadScenario={handleLoadScenario} />
       <Navbar />
 
       <main className="flex-1">
