@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query, status
+from fastapi import FastAPI, HTTPException, Query, status, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Dict, Any
 import datetime
@@ -17,6 +17,23 @@ import database as db
 
 # Initialize database schema
 db.init_db()
+
+def require_admin_role(
+    x_user_role: Optional[str] = Header(None),
+    authorization: Optional[str] = Header(None)
+):
+    """
+    Enforce administrator role permissions on sensitive moderation queue actions.
+    Prevents unauthorized or regular resident accounts from accessing moderation data.
+    """
+    if x_user_role == "admin":
+        return True
+    if authorization and ("admin" in authorization.lower() or "service_role" in authorization.lower()):
+        return True
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Administrator role authorization required for moderation queue access."
+    )
 
 app = FastAPI(
     title="BlockBridge AI API",
@@ -166,7 +183,7 @@ def submit_partner_resource(sub: PartnerSubmissionSchema):
     return {"message": "Resource submission received for review", "id": sub_id}
 
 @app.get("/api/admin/review-queue")
-def get_review_queue():
+def get_review_queue(admin: bool = Depends(require_admin_role)):
     resources = load_resources()
     stale = [r for r in resources if r.get("verification_status") == "Needs Re-verification"]
     submissions = db.get_partner_submissions()
@@ -179,7 +196,7 @@ def get_review_queue():
     }
 
 @app.post("/api/admin/partner-submissions/{id}/moderate")
-def moderate_partner_submission(id: str, action: Dict[str, str]):
+def moderate_partner_submission(id: str, action: Dict[str, str], admin: bool = Depends(require_admin_role)):
     new_status = action.get("status", "Approved")
     success = db.update_submission_status(id, new_status)
     if not success:

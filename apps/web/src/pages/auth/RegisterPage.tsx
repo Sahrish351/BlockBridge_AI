@@ -216,3 +216,4 @@ export const RegisterPage: React.FC = () => {
     </div>
   );
 };
+

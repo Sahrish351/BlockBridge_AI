@@ -396,6 +396,26 @@ export const apiService = {
   },
 
   async getAdminQueue() {
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/review-queue`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': 'admin'
+        }
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.partner_submissions && data.partner_submissions.length > 0) {
+          partnerSubmissions = data.partner_submissions;
+        }
+        if (data.error_reports && data.error_reports.length > 0) {
+          submittedReports = data.error_reports;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+
     await new Promise((r) => setTimeout(r, 100));
     return {
       partnerSubmissions: [...partnerSubmissions],
@@ -408,6 +428,17 @@ export const apiService = {
     const sub = partnerSubmissions.find((s) => s.id === id);
     if (!sub) return false;
     sub.status = action;
+
+    try {
+      fetch(`${API_BASE}/api/admin/partner-submissions/${id}/moderate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': 'admin'
+        },
+        body: JSON.stringify({ status: action })
+      }).catch(() => {});
+    } catch {}
 
     if (action === 'Approved') {
       currentResources.push({

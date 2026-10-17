@@ -78,3 +78,4 @@ BlockBridge AI has been transformed from an early concept into a competition-gra
    - Toggle between **Resident View** and **Small Business View** to see capital targets vs utility relief schedules.
 6. **Moderation & Standards (`/admin` & `/resource-standards`)**:
    - Switch to **Civic Reviewer** persona to view the partner submission review queue and stale program audit flags.
+

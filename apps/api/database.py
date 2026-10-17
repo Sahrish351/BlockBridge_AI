@@ -229,3 +229,4 @@ def update_submission_status(sub_id: str, new_status: str) -> bool:
     conn.commit()
     conn.close()
     return rows_affected > 0
+
