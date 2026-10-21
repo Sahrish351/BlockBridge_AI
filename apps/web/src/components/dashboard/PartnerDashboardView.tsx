@@ -12,6 +12,7 @@ import {
   ArrowRight, 
   X
 } from 'lucide-react';
+import { apiService } from '../../services/apiService';
 
 interface PartnerSubmissionItem {
   id: string;
@@ -75,10 +76,25 @@ export const PartnerDashboardView: React.FC = () => {
     if (!formName.trim()) return;
 
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 600));
+    let newId = `sub-0${submissions.length + 1}`;
+    try {
+      const generatedId = await apiService.submitPartnerResource({
+        provider_name: 'Westside Future Fund',
+        resource_name: formName.trim(),
+        summary: formSummary.trim(),
+        category: formCategory as any,
+        official_url: formUrl.trim(),
+        contact_email: 'coordinator@westsidefuturefund.org',
+        eligibility_summary: formEligibility.trim() || '',
+        coverage_area: 'Atlanta (Westside)',
+      });
+      if (generatedId) newId = generatedId;
+    } catch {
+      await new Promise((r) => setTimeout(r, 400));
+    }
 
     const newSub: PartnerSubmissionItem = {
-      id: `sub-0${submissions.length + 1}`,
+      id: newId,
       name: formName.trim(),
       category: formCategory,
       submitted: 'Today',

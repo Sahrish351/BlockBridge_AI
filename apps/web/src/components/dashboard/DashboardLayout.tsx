@@ -34,12 +34,16 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   activeRole,
   onRoleChange 
 }) => {
-  const { signOut } = useAuth();
+  const { user, role, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const isRealNonAdmin = user && !user.id?.startsWith('demo-') && role !== 'admin';
 
   const handleSignOut = async () => {
     await signOut();
@@ -264,7 +268,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             {/* Quick Persona Switcher for Evaluation */}
             <div className="relative">
               <button
-                onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+                onClick={() => {
+                  setRoleDropdownOpen(!roleDropdownOpen);
+                  setNotificationsOpen(false);
+                  setProfileMenuOpen(false);
+                }}
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-[#E8E4DA] text-xs font-semibold text-[#202720] hover:border-[#246B52] transition-colors shadow-sm"
                 title="Switch Preview Role / Persona"
               >
@@ -280,61 +288,204 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                     className="fixed inset-0 z-30" 
                     onClick={() => setRoleDropdownOpen(false)} 
                   />
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#E8E4DA] py-2 z-40 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <div className="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-black/40">
-                      Switch Active Dashboard View
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-[#E8E4DA] py-2 z-40 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="px-3.5 py-1.5 flex items-center justify-between border-b border-[#E8E4DA] pb-2 mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-black/40">
+                        Demo Sandbox Personas
+                      </span>
+                      <span className="text-[9px] font-bold bg-[#EBF3ED] text-[#246B52] px-2 py-0.5 rounded-full">
+                        Test Mode
+                      </span>
                     </div>
+
                     {[
-                      { role: 'resident' as UserRole, label: 'Resident (Keisha Jenkins)' },
-                      { role: 'small_business' as UserRole, label: 'Small Business (Marcus Vance)' },
-                      { role: 'partner' as UserRole, label: 'Community Partner (Westside)' },
-                      { role: 'admin' as UserRole, label: 'Civic Reviewer (Admin)' },
-                    ].map((item) => (
-                      <button
-                        key={item.role}
-                        onClick={() => {
-                          onRoleChange?.(item.role);
-                          setRoleDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors ${
-                          activeRole === item.role
-                            ? 'bg-[#EBF3ED] text-[#143D2F] font-bold'
-                            : 'text-[#202720] hover:bg-black/5'
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                        {activeRole === item.role && <Check className="w-3.5 h-3.5 text-[#246B52]" />}
-                      </button>
-                    ))}
+                      { role: 'resident' as UserRole, label: 'Resident', desc: 'Keisha Jenkins' },
+                      { role: 'small_business' as UserRole, label: 'Small Business', desc: 'Marcus Vance' },
+                      { role: 'partner' as UserRole, label: 'Community Partner', desc: 'Westside Future Fund' },
+                      { role: 'admin' as UserRole, label: 'Civic Reviewer', desc: 'Admin Moderation', adminOnly: true },
+                    ].map((item) => {
+                      const isLocked = item.adminOnly && isRealNonAdmin;
+                      return (
+                        <button
+                          key={item.role}
+                          disabled={isLocked}
+                          onClick={() => {
+                            if (isLocked) return;
+                            onRoleChange?.(item.role);
+                            setRoleDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors text-left ${
+                            isLocked 
+                              ? 'opacity-40 cursor-not-allowed bg-stone-50' 
+                              : activeRole === item.role
+                              ? 'bg-[#EBF3ED] text-[#143D2F] font-bold'
+                              : 'text-[#202720] hover:bg-black/5'
+                          }`}
+                        >
+                          <div>
+                            <span className="font-bold block">{item.label}</span>
+                            <span className="text-[11px] text-black/50 font-normal">{item.desc}</span>
+                          </div>
+                          {activeRole === item.role ? (
+                            <Check className="w-4 h-4 text-[#246B52]" />
+                          ) : isLocked ? (
+                            <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">Locked</span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}
             </div>
 
             {/* Notification Bell */}
-            <button 
-              className="relative p-2 rounded-xl text-[#202720] hover:bg-black/5 transition-colors"
-              aria-label="View notifications"
-            >
-              <Bell className="w-4 h-4 text-black/60" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E98770]" />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen);
+                  setRoleDropdownOpen(false);
+                  setProfileMenuOpen(false);
+                }}
+                className="relative p-2 rounded-xl text-[#202720] hover:bg-black/5 transition-colors"
+                aria-label="View notifications"
+              >
+                <Bell className="w-4 h-4 text-black/60" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E98770]" />
+              </button>
 
-            {/* Profile Chip matching reference */}
-            <div className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-[#E8E4DA]">
-              <img
-                src={currentPersona.avatar}
-                alt={currentPersona.name}
-                className="w-8 h-8 rounded-full object-cover border border-[#E8E4DA] shadow-sm flex-shrink-0"
-              />
-              <div className="hidden md:flex flex-col text-left">
-                <span className="text-xs font-bold text-[#202720] leading-tight line-clamp-1">
-                  {currentPersona.name}
-                </span>
-                <span className="text-[10px] text-black/50 leading-tight">
-                  {currentPersona.roleLabel}
-                </span>
-              </div>
+              {notificationsOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-30" 
+                    onClick={() => setNotificationsOpen(false)} 
+                  />
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-[#E8E4DA] p-4 z-40 space-y-3 animate-in fade-in slide-in-from-top-1 duration-150 text-xs">
+                    <div className="flex items-center justify-between pb-2 border-b border-[#E8E4DA]">
+                      <span className="font-bold text-[#202720]">Notifications</span>
+                      <span className="text-[10px] text-[#246B52] font-semibold cursor-pointer hover:underline" onClick={() => setNotificationsOpen(false)}>
+                        Dismiss all
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[#202720]">LIHEAP Status</span>
+                          <span className="text-[10px] text-black/40">2h ago</span>
+                        </div>
+                        <p className="text-[11px] text-black/60">
+                          Georgia Gateway priority enrollment window opens Nov 1 for Fulton County residents.
+                        </p>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[#202720]">Opportunity Fund</span>
+                          <span className="text-[10px] text-black/40">1d ago</span>
+                        </div>
+                        <p className="text-[11px] text-black/60">
+                          Invest Atlanta small business microloan advisory session scheduled for Thursday.
+                        </p>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[#202720]">Directory Verification</span>
+                          <span className="text-[10px] text-black/40">2d ago</span>
+                        </div>
+                        <p className="text-[11px] text-black/60">
+                          ACFB emergency food distribution pantry hours confirmed for English Avenue.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Profile Chip with Interactive Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setProfileMenuOpen(!profileMenuOpen);
+                  setRoleDropdownOpen(false);
+                  setNotificationsOpen(false);
+                }}
+                className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-[#E8E4DA] hover:opacity-90 transition-opacity"
+              >
+                <img
+                  src={currentPersona.avatar}
+                  alt={currentPersona.name}
+                  className="w-8 h-8 rounded-full object-cover border border-[#E8E4DA] shadow-sm flex-shrink-0"
+                />
+                <div className="hidden md:flex flex-col text-left">
+                  <span className="text-xs font-bold text-[#202720] leading-tight line-clamp-1">
+                    {currentPersona.name}
+                  </span>
+                  <span className="text-[10px] text-black/50 leading-tight">
+                    {currentPersona.roleLabel}
+                  </span>
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-black/40 hidden md:block" />
+              </button>
+
+              {profileMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-30" 
+                    onClick={() => setProfileMenuOpen(false)} 
+                  />
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#E8E4DA] py-2 z-40 text-xs animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="px-4 py-3 border-b border-[#E8E4DA]">
+                      <p className="font-bold text-[#202720]">{currentPersona.name}</p>
+                      <p className="text-[11px] text-black/50">{currentPersona.location}</p>
+                      <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#EBF3ED] text-[#246B52]">
+                        {currentPersona.roleLabel} Account
+                      </span>
+                    </div>
+
+                    <div className="py-1">
+                      <Link
+                        to="/app/plans"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-black/70 hover:bg-[#FAF8F3] hover:text-[#202720]"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>Action Plans</span>
+                      </Link>
+
+                      <Link
+                        to="/resources?saved=true"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-black/70 hover:bg-[#FAF8F3] hover:text-[#202720]"
+                      >
+                        <Bookmark className="w-4 h-4" />
+                        <span>Saved Resources</span>
+                      </Link>
+
+                      <Link
+                        to="/resource-standards"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-black/70 hover:bg-[#FAF8F3] hover:text-[#202720]"
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Verification Standards</span>
+                      </Link>
+                    </div>
+
+                    <div className="border-t border-[#E8E4DA] pt-1">
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-red-600 hover:bg-red-50 text-left font-semibold"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -347,3 +498,4 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     </div>
   );
 };
+

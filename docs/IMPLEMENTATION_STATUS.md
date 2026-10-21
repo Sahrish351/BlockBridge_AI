@@ -4,78 +4,104 @@
 **Hackathon:** Black Code Collective Hacktoberfest  
 **Track:** Track 3: Community Development  
 **Repository:** [https://github.com/Sahrish351/BlockBridge_AI.git](https://github.com/Sahrish351/BlockBridge_AI.git)  
-**Status Date:** October 17, 2026  
+**Status Date:** October 21, 2026  
 
 ---
 
 ## 1. Executive Summary
 
-BlockBridge AI has been transformed from an early concept into a competition-grade, editorial-quality civic technology application. It tackles the **fragmentation and follow-through failure** in community development by combining:
-1. **Grounded AI Discovery:** Recommendations powered by Google Gemini (`gemini-flash-latest`) strictly constrained to 12 verified Atlanta municipal and nonprofit records.
-2. **Dignity-First Human Experience:** Editorial typography (`DM Serif Display` + `DM Sans`), warm civic palette (Ivory `#FAF8F3`, Forest Green `#246B52`, Soft Sage `#DCEBE1`, Coral `#E98770`), and real community photography.
-3. **Dual Role-Specific Workspaces:** Tailored dashboards for **Small Businesses** (commercial leases, capital readiness, $10k–$40k grant pipeline) and **Residents** (utility relief, emergency food pantry calendar, voucher prerequisites).
-4. **Actionable Follow-Through Tracker:** Step-by-step checklist generation, note logging, date reminders, status progression, and printable PDF export.
-5. **Real Authentication & Reviewer Persona Switching:** Connected to Supabase Auth with persistent sessions, password reset, protected routes, and 1-click test personas for hackathon judges.
+BlockBridge AI is a competition-grade, editorial-quality civic technology application addressing the fragmentation and follow-through failure in community development.
+
+The platform provides four dedicated, role-specific workspaces matching the official 4-quadrant design reference:
+1. **Resident Dashboard (Keisha Jenkins):** Utility heating/cooling relief (LIHEAP), emergency food access calendar (ACFB), and household step-by-step progress tracking.
+2. **Small Business Owner Dashboard (Marcus Vance):** Capital readiness ($10k–$40k illustrative target), prerequisite roadmap checklist (EIN, GA Secretary of State, 6-Month P&L), and quarterly cohort deadlines (RICE & Invest Atlanta).
+3. **Community Partner Dashboard (Westside Future Fund):** Program submission portal, submission status tracking (Pending Review, Approved, Needs Evidence), and reviewer feedback inspection.
+4. **Admin & Civic Reviewer Dashboard (Senior Civic Reviewer):** Verification queue, submission trends bar chart, community error reports, and moderation audit log.
 
 ---
 
-## 2. Visual Design & Photography Seam
+## 2. Real Browser Preview & Visual Polish Audit
 
-| Location | Purpose | Asset / Visual Trait |
+### Visual Consistency & Reference Alignment
+- **Layout Shell:** Full-height dark forest-green sidebar (`#143D2F`) with brand emblem, active pill indicators, and bottom `Sign Out`. Warm ivory page container (`#FAF8F3`) with clean borders (`#E8E4DA`).
+- **Typography:** DM Serif Display for warm editorial headlines; DM Sans for readable data cards, tables, and forms.
+- **Top Bar:** Fixed header with search input (`Search resources...`), notification bell with unread indicator and interactive popover, and profile chip with role badge and interactive dropdown.
+- **Responsiveness:** Validated across mobile (360px, 390px), tablet (768px), laptop (1024px), and desktop (1440px) with slide-over navigation drawer, responsive flex grids, and horizontal scroll on data tables.
+
+---
+
+## 3. Data Verification & Source Grounding Audit
+
+| Element | Stated Value | Source Type | Official Verification Status |
+| :--- | :--- | :--- | :--- |
+| **Capital Readiness** | $10,000 – $40,000 | Illustrative Demo Profile | Labeled as *"Target grant/loan range (Illustrative demo profile)"*. |
+| **Next Cohort Target** | Nov 15, 2026 | Verified Official Cycle | Verified against Russell Innovation Center for Entrepreneurs (RICE) quarterly rolling admissions; labeled as *"Target Cohort Application"*. |
+| **Invest Atlanta Opportunity Fund** | Rolling Allocations | Verified Official Program | Verified against Invest Atlanta Municipal Small Business Opportunity Fund guidelines; replaces expired ARPA Resurgence grant. |
+| **LIHEAP Application** | Priority Window | Verified State DHS Program | Verified against Georgia DHS Division of Family & Children Services energy relief guidelines. |
+| **Resource Links** | Verified IDs | Internal Verified Registry | All cards link to verified IDs: `res-001` (RICE), `res-002` (Invest Atlanta), `res-004` (LIHEAP), `res-005` (ACFB), `res-007` (GA DCA), `res-008` (SCORE/SBA). |
+
+---
+
+## 4. Interaction & Functional Verification
+
+| Control / Flow | Expected Action | Verification Result |
 | :--- | :--- | :--- |
-| **Hero Section** | Local commerce storefront | Verified Unsplash photograph (`photo-1556740738-b6a63e27c4df`), editorial split layout with live interactive checklist preview |
-| **Resident Pathway** | Dignified community consultation | Community resident support photograph (`photo-1577495508048-b635879837f1`), direct access to utility & housing relief |
-| **Small Business Pathway** | Collaborative small enterprise team | Small business workshop photograph (`photo-1531482615713-2afd69097998`), capital readiness & incubator pipeline |
-| **Economic Mobility Section** | Creative studio workspace | Studio portrait photograph (`photo-1600880292203-757bb62b4baf`), 4-step civic matching methodology |
-| **Community Partner Callout** | Grassroots collaborative hands | Community partnership photograph (`photo-1582213782179-e0d53f98f2ca`), resource submission & standards verification |
+| **Persona Switcher** | Toggles active dashboard between Resident, Business, Partner, and Admin | Verified working; changes active role, updates data models, and sets demo profile. |
+| **Notification Bell** | Toggles notification popover | Verified working; displays recent notifications with "Dismiss all" action. |
+| **Profile Chip** | Opens account menu | Verified working; provides links to Action Plans, Saved Resources, Standards, and Sign Out. |
+| **Business Roadmap** | Clicking milestone toggles status (Completed / In Progress / Pending) | Verified working; dynamically updates prerequisite progress bar. |
+| **Continue Plan** | Links to resident action plan | Verified working; opens `/app/plans/plan-res-01` with live checklist status. |
+| **Partner Submission** | Opens modal to submit new community program | Verified working; submits to `apiService.submitPartnerResource`, updates backend queue, and reflects in list. |
+| **Partner Review Modal** | Inspect reviewer feedback | Verified working; opens modal with category, submission date, status, and feedback. Partners cannot approve their own submissions. |
+| **Admin Moderation** | Review partner submission | Verified working; opens modal with official link check and enables Approve & Publish, Request Evidence, or Reject. |
+| **Quick Actions** | View Error Reports & Audit Logs | Verified working; opens dedicated modal dialogs for community error reports, audit logs, and user permissions. |
 
 ---
 
-## 3. Architecture & Functional Implementation Matrix
+## 5. Security & Authentication Audit
 
-| Component | Status | Implementation Details |
-| :--- | :--- | :--- |
-| **Editorial Landing Page** | Verified Complete | Split hero, trust indicators, interactive checklist, 2 user pathways, featured verified resources, responsible AI statement, partner section, complete footer. |
-| **Authentication System** | Verified Complete | Supabase Auth client (`@supabase/supabase-js`), AuthContext with persistent session state, Registration, Login, Forgot Password, and 1-Click Judge Personas. |
-| **Protected Route Seam** | Verified Complete | `<ProtectedRoute>` guards `/app`, `/app/plans`, and `/admin`. Role-based access control enforces `admin` permissions on moderation queue with quick-switch assistance. |
-| **Dual-Role Dashboard** | Verified Complete | `/app` features tabbed and persona-aware views: **Small Business (Marcus)** with capital readiness & RCIE milestones; **Resident (Keisha)** with LIHEAP & Food Bank pantry schedules. |
-| **Action Plan Roadmap** | Verified Complete | `/app/plans/:id` supports interactive checklist toggling, custom step addition, personal note persistence, due-date updates, step deletion, and browser printing/PDF export. |
-| **AI Recommendation Pipeline** | Verified Complete | `POST /api/recommendations/ai` uses Gemini 2.5/Flash with strict grounding prompt. Seamlessly falls back to deterministic matcher if network or provider times out. |
-| **Persistent Storage** | Verified Complete | SQLite database (`blockbridge.db`) in backend for action plans, saved resources, reports, and partner submissions. Client `localStorage` backup for zero-data-loss demo resilience. |
-| **Community Partner Seam** | Verified Complete | Self-service intake for organizations to submit programs into moderation queue with eligibility guidelines and verification audit logs. |
-| **Moderator Review Queue** | Verified Complete | `/admin` queue for reviewing submissions, triaging community error reports, and auditing stale resources needing re-verification. |
-
----
-
-## 4. Verification & Quality Gates
-
-1. **TypeScript Compilation & Production Build:**
-   ```bash
-   npm run build --workspace=blockbridge-web
-   ```
-   - **Result:** Code 0 (`tsc` passed with 0 errors; Vite bundled 2,009 modules into `dist/assets/index-*.js`).
-2. **Backend API Environment:**
-   - FastAPI, Uvicorn, SQLite3, Requests, Pydantic, Dotenv installed and verified.
-   - Endpoints tested: `/api/health`, `/api/resources`, `/api/recommendations`, `/api/action-plans`, `/api/admin/review-queue`.
-3. **Secret Protection:**
-   - `.env` files in both `apps/web` and `apps/api` are excluded by `.gitignore` and verified untracked.
-   - Runtime SQLite databases (`*.db`, `*.sqlite`) excluded from version control.
+1. **Route Protection:**
+   - `<ProtectedRoute>` guards `/app`, `/app/plans`, and `/admin`.
+   - Unauthenticated visitors are redirected to `/login` with location preservation.
+2. **Admin API Authorization:**
+   - Backend endpoint `/api/admin/review-queue` and `/api/admin/partner-submissions/:id/moderate` enforce `require_admin_role`.
+   - Requests without valid admin credentials receive `403 Forbidden`.
+3. **Client-Side Guardrails:**
+   - In production sessions, non-admin accounts have the Civic Reviewer persona locked with a "Restricted (Admin Only)" badge.
+   - Demo persona switching is restricted to the explicitly isolated "Demo Sandbox Mode".
+4. **Partner Self-Approval Prevention:**
+   - Partner dashboard provides zero self-approval controls. Submissions must pass through the administrative review queue.
+5. **Secret Protection:**
+   - `.env` files and runtime SQLite databases (`blockbridge.db`) are excluded by `.gitignore` and untracked in Git.
 
 ---
 
-## 5. Judge Demo Walkthrough (3-Minute Tour)
+## 6. Test Commands & Quality Gates
 
-1. **Homepage (`/`)**:
-   - Inspect the editorial hero, test the interactive checklist preview, and review the resident vs small business pathways.
-2. **One-Click Persona Sign-In (`/login`)**:
-   - Click **"Resident Persona"** or **"Business Owner"** under the Hackathon Demo section for instant authenticated entry.
-3. **Guided Intake (`/find-support`)**:
-   - Select the **"Marcus Vance (Café in West End)"** preset. Click **Generate My Action Plan**.
-   - Watch the 4-stage pipeline animate (Need Extraction → Verified Filtering → Unknowns Breakdown → Action Checklist).
-4. **Action Plan Follow-Through (`/app/plans/plan-01`)**:
-   - Check off a milestone, add a custom reminder note, click **Print / Export PDF**, or add a new custom step.
-5. **Role-Specific Dashboard (`/app`)**:
-   - Toggle between **Resident View** and **Small Business View** to see capital targets vs utility relief schedules.
-6. **Moderation & Standards (`/admin` & `/resource-standards`)**:
-   - Switch to **Civic Reviewer** persona to view the partner submission review queue and stale program audit flags.
+### Web Production Build
+```bash
+npm run build --workspace=blockbridge-web
+```
+- **Result:** Code 0 (`tsc` passed with 0 errors; Vite transformed 2,012 modules, bundled into `dist/assets/index-*.js`).
 
+### Backend Test Suite
+```bash
+pytest -v apps/api/test_api.py
+```
+- **Result:** Code 0 (`9 passed, 0 failed in 3.73s`).
+  - `test_health_check` PASSED
+  - `test_get_resources` PASSED
+  - `test_filter_resources_by_category` PASSED
+  - `test_search_resources` PASSED
+  - `test_get_resource_by_id` PASSED
+  - `test_recommendations_endpoint` PASSED
+  - `test_action_plan_crud` PASSED
+  - `test_admin_authorization_enforcement` PASSED
+  - `test_partner_submission_workflow` PASSED
+
+---
+
+## 7. Environment Configuration
+
+- **Frontend (Vite):** Runs on port 5173. Configured with `@supabase/supabase-js` and optional Supabase URL/Anon key in `apps/web/.env`.
+- **Backend (FastAPI):** Runs on port 8000. Configured with Google Gemini API key (`GEMINI_API_KEY`) in `apps/api/.env` with automatic fallback to deterministic grounded matcher.

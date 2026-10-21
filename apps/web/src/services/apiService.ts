@@ -233,8 +233,20 @@ export const apiService = {
   },
 
   // --- Action Plans ---
-  async getActionPlans(): Promise<ActionPlan[]> {
+  async getActionPlans(userId?: string): Promise<ActionPlan[]> {
     await new Promise((r) => setTimeout(r, 90));
+    if (!currentPlans.some((p) => p.id === 'plan-res-01')) {
+      const resPlan = INITIAL_ACTION_PLANS.find((p) => p.id === 'plan-res-01');
+      if (resPlan) currentPlans.unshift(resPlan);
+    }
+    if (!currentPlans.some((p) => p.id === 'plan-sb-01')) {
+      const sbPlan = INITIAL_ACTION_PLANS.find((p) => p.id === 'plan-sb-01');
+      if (sbPlan) currentPlans.push(sbPlan);
+    }
+    if (userId) {
+      const filtered = currentPlans.filter((p) => p.user_id === userId);
+      return filtered.length > 0 ? filtered : [...currentPlans];
+    }
     return [...currentPlans];
   },
 

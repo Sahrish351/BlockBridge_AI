@@ -448,8 +448,58 @@ export const VERIFIED_RESOURCES: Resource[] = [
 
 export const INITIAL_ACTION_PLANS: ActionPlan[] = [
   {
+    id: "plan-res-01",
+    user_id: "demo-resident-keisha",
+    title: "Keisha's LIHEAP Energy Assistance & Household Plan",
+    goal: "Complete LIHEAP heating assistance documentation and stabilize household utility costs with verified community programs.",
+    created_at: "2026-10-14T10:00:00Z",
+    updated_at: "2026-10-17T11:00:00Z",
+    tasks: [
+      {
+        id: "task-res-1",
+        title: "Proof of Gross Income Verified",
+        description: "Assemble recent 30-day pay stubs and household gross income verification.",
+        status: "Completed",
+        due_date: "2026-10-20",
+        source_url: "https://gateway.ga.gov",
+        notes: "September pay stubs collected and ready for submission.",
+        resource_id: "res-004"
+      },
+      {
+        id: "task-res-2",
+        title: "Recent Georgia Power Statement Ready",
+        description: "Download current electric utility statement with account number and service address.",
+        status: "Completed",
+        due_date: "2026-10-22",
+        source_url: "https://www.georgiapower.com",
+        notes: "Statement on file showing active residential account in 30314.",
+        resource_id: "res-004"
+      },
+      {
+        id: "task-res-3",
+        title: "Submit Fulton County EOA Intake Application",
+        description: "Complete online intake on GA Gateway or schedule appointment with local Community Action Agency.",
+        status: "In Progress",
+        due_date: "2026-11-01",
+        source_url: "https://gateway.ga.gov",
+        notes: "Application draft started online; awaiting submission window confirmation.",
+        resource_id: "res-004"
+      },
+      {
+        id: "task-res-4",
+        title: "Track Direct Utility Credit Notice",
+        description: "Verify energy relief credit applied directly to Georgia Power billing statement.",
+        status: "Not Started",
+        due_date: "2026-11-15",
+        source_url: "https://gateway.ga.gov",
+        notes: "",
+        resource_id: "res-004"
+      }
+    ]
+  },
+  {
     id: "plan-sb-01",
-    user_id: "demo-user-marcus",
+    user_id: "demo-business-marcus",
     title: "Vance Community Roasters & Café Expansion Plan",
     goal: "Prepare financial documentation, apply for Invest Atlanta Opportunity loan, and enroll in RICE capital cohort.",
     created_at: "2026-10-15T12:00:00Z",

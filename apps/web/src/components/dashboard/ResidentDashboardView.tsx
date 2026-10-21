@@ -27,6 +27,12 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
   savedResources,
   onContinuePlan,
 }) => {
+  const residentPlan = plans.find(p => p.id === 'plan-res-01') || plans[0];
+  const targetPlanId = residentPlan?.id || 'plan-res-01';
+  const totalTasks = residentPlan?.tasks?.length || 4;
+  const completedTasks = residentPlan?.tasks ? residentPlan.tasks.filter(t => t.status === 'Completed').length : 2;
+  const progressPct = Math.round((completedTasks / totalTasks) * 100);
+
   const activePlanCount = plans.length > 0 ? plans.length : 2;
   const savedCount = savedResources.length > 0 ? savedResources.length : 5;
 
@@ -157,9 +163,9 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               </div>
 
               <Link
-                to="/app/plans"
-                onClick={() => plans[0] && onContinuePlan?.(plans[0].id)}
-                className="self-start px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors whitespace-nowrap"
+                to={`/app/plans/${targetPlanId}`}
+                onClick={() => onContinuePlan?.(targetPlanId)}
+                className="self-start px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors whitespace-nowrap shadow-sm"
               >
                 Continue Plan
               </Link>
@@ -168,11 +174,14 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             {/* Progress Bar & Steps Status */}
             <div className="space-y-2 pt-2 border-t border-[#E8E4DA]/60">
               <div className="flex items-center justify-between text-xs font-medium text-black/60">
-                <span>2 of 4 steps completed</span>
-                <span className="font-bold text-[#246B52]">50%</span>
+                <span>{completedTasks} of {totalTasks} steps completed</span>
+                <span className="font-bold text-[#246B52]">{progressPct}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-[#E8E4DA] overflow-hidden">
-                <div className="h-full bg-[#246B52] rounded-full transition-all duration-500 w-1/2" />
+                <div 
+                  className="h-full bg-[#246B52] rounded-full transition-all duration-500" 
+                  style={{ width: `${Math.min(100, Math.max(0, progressPct))}%` }}
+                />
               </div>
             </div>
 
@@ -212,7 +221,7 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
           <div className="bg-white rounded-3xl p-5 border border-[#E8E4DA] shadow-sm space-y-3">
             {[
               {
-                id: 'res-001',
+                id: 'res-004',
                 name: 'LIHEAP – Heating & Cooling Assistance',
                 provider: 'Georgia Department of Human Services',
                 icon: Zap,
@@ -220,19 +229,19 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 badge: 'Verified',
               },
               {
-                id: 'res-002',
-                name: 'SNAP (Food Assistance)',
-                provider: 'Georgia Division of Family & Children Services',
-                icon: ShoppingBag,
-                iconBg: 'bg-[#EBF3ED] text-[#246B52]',
-                badge: 'Verified',
-              },
-              {
-                id: 'res-003',
-                name: 'Emergency Food Access',
+                id: 'res-005',
+                name: 'Emergency Food Access & Pantries',
                 provider: 'Atlanta Community Food Bank',
                 icon: HeartHandshake,
                 iconBg: 'bg-[#FDEEE9] text-[#E98770]',
+                badge: 'Verified',
+              },
+              {
+                id: 'res-007',
+                name: 'Housing Choice Voucher & Rental Directory',
+                provider: 'Georgia Department of Community Affairs',
+                icon: Home,
+                iconBg: 'bg-[#EBF3ED] text-[#246B52]',
                 badge: 'Verified',
               },
             ].map((item) => {
@@ -286,21 +295,21 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
-                id: 'res-001',
+                id: 'res-004',
                 title: 'LIHEAP Assistance',
                 org: 'GADHS',
                 icon: Zap,
               },
               {
-                id: 'res-003',
-                title: 'Food Pantries',
+                id: 'res-005',
+                title: 'Food Pantries Network',
                 org: 'ACFB',
                 icon: ShoppingBag,
               },
               {
-                id: 'res-004',
+                id: 'res-007',
                 title: 'Rental Assistance',
-                org: 'Invest Atlanta',
+                org: 'GA DCA',
                 icon: Home,
               },
             ].map((res) => {

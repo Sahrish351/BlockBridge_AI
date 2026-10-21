@@ -12,6 +12,7 @@ import {
   CheckCircle2, 
   ExternalLink
 } from 'lucide-react';
+import { apiService } from '../../services/apiService';
 
 interface ReviewQueueItem {
   id: string;
@@ -70,9 +71,65 @@ export const AdminDashboardView: React.FC = () => {
 
   const [activeReviewItem, setActiveReviewItem] = useState<ReviewQueueItem | null>(null);
   const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
+  
+  // Modals for Quick Actions
+  const [activeModal, setActiveModal] = useState<'reports' | 'audit' | 'users' | null>(null);
 
-  const handleModerate = (action: 'Approved' | 'Rejected' | 'Needs Info') => {
+  // Mock Error Reports from Community
+  const errorReports = [
+    {
+      id: 'rep-01',
+      resource: 'Atlanta Housing Choice Voucher Homeownership Program',
+      issue: 'Outdated 2025 income threshold table; 2026 fiscal guidelines released.',
+      reporter: 'community_advocate@gatech.edu',
+      date: 'Oct 15, 2026',
+      status: 'Open'
+    },
+    {
+      id: 'rep-02',
+      resource: 'Antioch Baptist Emergency Food Pantry',
+      issue: 'Thursday distribution hour shifted from 9:30 AM to 10:00 AM.',
+      reporter: 'resident.volunteer@westside.org',
+      date: 'Oct 14, 2026',
+      status: 'In Review'
+    }
+  ];
+
+  // Audit Log History
+  const auditLogs = [
+    {
+      id: 'aud-01',
+      action: 'Resource Verified & Published',
+      target: 'Invest Atlanta Small Business Opportunity Fund',
+      reviewer: 'Senior Civic Reviewer (Admin)',
+      timestamp: 'Oct 17, 2026 14:22 UTC'
+    },
+    {
+      id: 'aud-02',
+      action: 'Provenance Re-verification Approved',
+      target: 'Low-Income Home Energy Assistance Program (LIHEAP)',
+      reviewer: 'Senior Civic Reviewer (Admin)',
+      timestamp: 'Oct 16, 2026 09:15 UTC'
+    },
+    {
+      id: 'aud-03',
+      action: 'Partner Intake Request Dispatched',
+      target: 'Homeowner Retention Anti-Displacement Tax Fund (WFF)',
+      reviewer: 'System Orchestrator',
+      timestamp: 'Oct 15, 2026 16:40 UTC'
+    }
+  ];
+
+  const handleModerate = async (action: 'Approved' | 'Rejected' | 'Needs Info') => {
     if (!activeReviewItem) return;
+
+    if (action === 'Approved' || action === 'Rejected') {
+      try {
+        await apiService.moderatePartnerSubmission(activeReviewItem.id, action);
+      } catch (err) {
+        console.warn('API moderation error:', err);
+      }
+    }
 
     setQueue(prev => prev.map(item => {
       if (item.id !== activeReviewItem.id) return item;
@@ -160,7 +217,7 @@ export const AdminDashboardView: React.FC = () => {
         {/* Left Column (8 cols): Review Queue Table & Bar Chart */}
         <div className="lg:col-span-8 space-y-6">
           {/* Review Queue Table */}
-          <div className="space-y-4">
+          <div id="review-queue-section" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-serif text-xl font-bold text-[#202720]">
                 Review Queue
@@ -278,9 +335,12 @@ export const AdminDashboardView: React.FC = () => {
             </h3>
 
             <div className="space-y-3">
-              <Link
-                to="/admin?tab=submissions"
-                className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
+              <button
+                onClick={() => {
+                  const el = document.getElementById('review-queue-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
               >
                 <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <FileCheck2 className="w-4 h-4" />
@@ -293,11 +353,11 @@ export const AdminDashboardView: React.FC = () => {
                     Moderate partner resources
                   </p>
                 </div>
-              </Link>
+              </button>
 
-              <Link
-                to="/admin?tab=reports"
-                className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
+              <button
+                onClick={() => setActiveModal('reports')}
+                className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
               >
                 <div className="w-8 h-8 rounded-xl bg-[#FDEEE9] text-[#D85A3F] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <AlertTriangle className="w-4 h-4" />
@@ -310,11 +370,11 @@ export const AdminDashboardView: React.FC = () => {
                     Check user feedback & issues
                   </p>
                 </div>
-              </Link>
+              </button>
 
-              <Link
-                to="/admin?tab=audit"
-                className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
+              <button
+                onClick={() => setActiveModal('audit')}
+                className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
               >
                 <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <History className="w-4 h-4" />
@@ -327,9 +387,12 @@ export const AdminDashboardView: React.FC = () => {
                     View moderation history
                   </p>
                 </div>
-              </Link>
+              </button>
 
-              <div className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group cursor-pointer">
+              <button
+                onClick={() => setActiveModal('users')}
+                className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group cursor-pointer"
+              >
                 <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Users className="w-4 h-4" />
                 </div>
@@ -341,7 +404,7 @@ export const AdminDashboardView: React.FC = () => {
                     Role permissions & access
                   </p>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
 
@@ -453,6 +516,162 @@ export const AdminDashboardView: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Error Reports Modal */}
+      {activeModal === 'reports' && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#D85A3F] bg-[#FDEEE9] px-2.5 py-0.5 rounded-full">
+                  Community Accuracy
+                </span>
+                <h3 className="font-serif text-2xl font-bold text-[#202720] mt-1">
+                  Community Error Reports
+                </h3>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="p-1.5 rounded-full hover:bg-black/5 text-black/40 hover:text-black"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-black/60">
+              User-submitted reports identifying outdated program guidelines, broken contact numbers, or updated application windows.
+            </p>
+
+            <div className="space-y-3 max-h-80 overflow-y-auto">
+              {errorReports.map((report) => (
+                <div key={report.id} className="p-4 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#202720]">{report.resource}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FEF3C7] text-[#D97706]">
+                      {report.status}
+                    </span>
+                  </div>
+                  <p className="text-black/70">{report.issue}</p>
+                  <div className="flex items-center justify-between text-[11px] text-black/40 pt-1 border-t border-[#E8E4DA]/60">
+                    <span>Reported by: {report.reporter}</span>
+                    <span>{report.date}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-5 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743]"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Audit Logs Modal */}
+      {activeModal === 'audit' && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#246B52] bg-[#EBF3ED] px-2.5 py-0.5 rounded-full">
+                  Security & Provenance
+                </span>
+                <h3 className="font-serif text-2xl font-bold text-[#202720] mt-1">
+                  Moderation Audit Log
+                </h3>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="p-1.5 rounded-full hover:bg-black/5 text-black/40 hover:text-black"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-black/60">
+              Tamper-evident log of resource approvals, guideline modifications, and verification updates.
+            </p>
+
+            <div className="space-y-3 max-h-80 overflow-y-auto">
+              {auditLogs.map((log) => (
+                <div key={log.id} className="p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#202720]">{log.action}</span>
+                    <span className="text-[10px] text-black/40">{log.timestamp}</span>
+                  </div>
+                  <p className="text-[#246B52] font-medium">{log.target}</p>
+                  <p className="text-[11px] text-black/50">Signed by: {log.reviewer}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-5 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743]"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* User Management & Role Permissions Modal */}
+      {activeModal === 'users' && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#246B52] bg-[#EBF3ED] px-2.5 py-0.5 rounded-full">
+                  Access Control
+                </span>
+                <h3 className="font-serif text-2xl font-bold text-[#202720] mt-1">
+                  Role Permissions & Access
+                </h3>
+              </div>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="p-1.5 rounded-full hover:bg-black/5 text-black/40 hover:text-black"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2.5 text-xs">
+              {[
+                { role: 'Resident', access: 'Search, Save Resources, AI Plan Builder, Action Checklists', status: 'Active' },
+                { role: 'Small Business', access: 'Commercial Readiness Roadmaps, Grant Directory, Intake Planner', status: 'Active' },
+                { role: 'Community Partner', access: 'Resource Intake Submissions, Reviewer Feedback, Program Status', status: 'Active' },
+                { role: 'Civic Reviewer (Admin)', access: 'Review Queue, Moderate Submissions, Error Resolution, Audit Log', status: 'Restricted' },
+              ].map((item) => (
+                <div key={item.role} className="p-3 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-[#202720] block">{item.role}</span>
+                    <span className="text-[11px] text-black/50">{item.access}</span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF3ED] text-[#246B52]">
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-5 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743]"
+              >
+                Done
+              </button>
+            </div>
           </div>
         </div>
       )}

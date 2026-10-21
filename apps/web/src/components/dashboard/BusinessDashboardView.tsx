@@ -37,15 +37,15 @@ export const BusinessDashboardView: React.FC = () => {
     },
     {
       id: 'step-4',
-      title: 'Apply for Invest Atlanta Resurgence',
+      title: 'Apply for Invest Atlanta Small Business Opportunity Fund',
       status: 'Pending',
-      deadline: 'Nov 15, 2026',
+      deadline: 'Rolling Allocation',
     },
     {
       id: 'step-5',
       title: 'Apply for RICE Business Growth Academy',
       status: 'Pending',
-      deadline: 'Nov 30, 2026',
+      deadline: 'Nov 15, 2026',
     },
   ]);
 
@@ -139,13 +139,15 @@ export const BusinessDashboardView: React.FC = () => {
         {/* Card 3: Next Deadline */}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-black/60">Next Deadline</span>
+            <span className="text-xs font-medium text-black/60">Next Cohort Target</span>
             <Calendar className="w-4 h-4 text-[#E98770]" />
           </div>
           <div className="font-serif text-2xl font-bold text-[#202720]">
             Nov 15, 2026
           </div>
-          <span className="text-[11px] text-black/40">RICE Cohort Application</span>
+          <span className="text-[11px] text-black/50" title="RICE admits businesses through quarterly cohort cycles">
+            RICE Fall Cohort Target (Quarterly Rolling)
+          </span>
         </div>
 
         {/* Card 4: Find Business Support (Green Card with +) */}
@@ -247,21 +249,21 @@ export const BusinessDashboardView: React.FC = () => {
           <div className="bg-white rounded-3xl p-5 border border-[#E8E4DA] shadow-sm space-y-3">
             {[
               {
-                id: 'res-004',
-                title: 'Invest Atlanta Resurgence',
-                subtitle: 'Grants for small businesses',
+                id: 'res-002',
+                title: 'Invest Atlanta Opportunity Fund',
+                subtitle: 'Low-cost commercial loans & micro-grants',
                 verified: true,
               },
               {
-                id: 'res-007',
+                id: 'res-001',
                 title: 'RICE Business Growth Academy',
-                subtitle: 'Training & mentorship',
-                verified: false,
+                subtitle: 'Incubator, accelerator & capital readiness',
+                verified: true,
               },
               {
                 id: 'res-008',
-                title: 'Small Business Administration (SBA)',
-                subtitle: 'Loans & technical assistance',
+                title: 'SCORE Atlanta & SBA Advisory',
+                subtitle: 'Free 1-on-1 counseling & mentor network',
                 verified: true,
               },
             ].map((opp) => (
