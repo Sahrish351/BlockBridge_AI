@@ -146,19 +146,19 @@ export const AdminDashboardView: React.FC = () => {
   const pendingCount = queue.filter(q => q.status === 'Pending').length;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header */}
       <div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#202720] tracking-tight">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
           Admin Dashboard
         </h1>
-        <p className="text-sm text-black/60 mt-1">
+        <p className="text-xs sm:text-sm text-black/60 mt-0.5">
           Review and verify community resources, partner submissions, and system reports.
         </p>
       </div>
 
       {/* 4 Status KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Pending Reviews */}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center flex-shrink-0">

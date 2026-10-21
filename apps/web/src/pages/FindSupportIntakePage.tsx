@@ -52,8 +52,21 @@ export const FindSupportIntakePage: React.FC = () => {
 
   useEffect(() => {
     const scenario = searchParams.get('scenario');
+    const desc = searchParams.get('description') || searchParams.get('q');
     if (scenario) {
       loadScenario(scenario);
+    } else if (desc) {
+      setDescription(desc);
+      if (
+        desc.toLowerCase().includes('business') || 
+        desc.toLowerCase().includes('café') || 
+        desc.toLowerCase().includes('cafe') || 
+        desc.toLowerCase().includes('store') || 
+        desc.toLowerCase().includes('loan') || 
+        desc.toLowerCase().includes('grant')
+      ) {
+        setUserType('small_business');
+      }
     }
   }, [searchParams]);
 

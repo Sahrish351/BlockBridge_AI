@@ -122,29 +122,29 @@ export const PartnerDashboardView: React.FC = () => {
   const totalCount = submissions.length + 8; // Including historical records
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header with CTA Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#202720] tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
             Partner Portal
           </h1>
-          <p className="text-sm text-black/60 mt-1">
+          <p className="text-xs sm:text-sm text-black/60 mt-0.5">
             Submit and manage community resources. Track your submissions and feedback.
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#143D2F] text-white text-xs sm:text-sm font-semibold hover:bg-[#1E5743] transition-colors shadow-sm self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors shadow-sm self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>Submit a Resource</span>
         </button>
       </div>
 
       {/* 4 KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Total Submissions */}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0">

@@ -8,7 +8,6 @@ import { LandingPage } from './pages/LandingPage';
 import { ResourceCataloguePage } from './pages/ResourceCataloguePage';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
 import { FindSupportIntakePage } from './pages/FindSupportIntakePage';
-import { ActionPlanPage } from './pages/ActionPlanPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CommunityPartnersPage } from './pages/CommunityPartnersPage';
 import { StandardsPage } from './pages/StandardsPage';
@@ -37,23 +36,23 @@ const AppContent: React.FC = () => {
           }
         />
         <Route
-          path="/app/plans"
+          path="/app/*"
           element={
             <ProtectedRoute>
-              <ActionPlanPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/plans/:id"
-          element={
-            <ProtectedRoute>
-              <ActionPlanPage />
+              <DashboardPage />
             </ProtectedRoute>
           }
         />
         <Route
           path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/*"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <DashboardPage />

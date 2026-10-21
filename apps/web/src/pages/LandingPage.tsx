@@ -117,17 +117,17 @@ export const LandingPage: React.FC = () => {
             {/* Right Column: Dominant Photography & Single Floating AI Card */}
             <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end">
               <div className="relative w-full max-w-[560px]">
-                {/* Visual composition with soft sage curves & authentic local merchant photograph */}
-                <div className="relative w-full overflow-hidden rounded-3xl shadow-sm">
+                {/* Visual composition with authentic local merchant photograph */}
+                <div className="relative w-full overflow-hidden rounded-3xl shadow-md border border-[#E8E4DA] bg-stone-100">
                   <img
-                    src="/assets/images/hero-right-visual.png"
-                    alt="Confident small-business owner in a welcoming neighborhood shop with chalkboard sign"
-                    className="w-full h-auto object-cover select-none"
+                    src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1200&q=80"
+                    alt="Local community business owner in a welcoming neighborhood shop"
+                    className="w-full h-[380px] sm:h-[460px] object-cover select-none"
                     loading="eager"
                   />
 
-                  {/* Single Floating AI Assistance Card positioned in lower-right area */}
-                  <div className="absolute right-3 sm:right-5 bottom-3 sm:bottom-5 w-[92%] sm:w-[325px] md:w-[340px] bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-bb-line/80 transition-all hover:shadow-2xl">
+                  {/* Single Floating AI Assistance Card - Clean, no duplicate background label */}
+                  <div className="absolute right-3 sm:right-5 bottom-3 sm:bottom-5 left-3 sm:left-auto sm:w-[350px] bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-[#E8E4DA] transition-all hover:shadow-2xl z-10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#202720]">
                         <Sparkles className="w-4 h-4 text-[#246B52]" />
@@ -135,12 +135,12 @@ export const LandingPage: React.FC = () => {
                       </div>
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#E8F5EE] text-[#1B5E3C]">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#246B52] animate-pulse"></span>
-                        Live
+                        Ready
                       </span>
                     </div>
 
-                    <p className="text-[11px] sm:text-xs text-bb-ink-muted leading-relaxed mt-1.5 mb-3">
-                      Tell us your needs and get personalized resource matches with next steps.
+                    <p className="text-[11px] sm:text-xs text-black/60 leading-relaxed mt-1.5 mb-3">
+                      Tell us your needs and get personalized resource matches with verified next steps.
                     </p>
 
                     <form onSubmit={handleAIAssistSubmit} className="relative flex items-center bg-[#FAF8F3] border border-[#D5D0C5] rounded-full p-1 pl-3.5 shadow-inner focus-within:border-[#246B52] focus-within:ring-2 focus-within:ring-[#246B52]/20 transition-all">
@@ -148,8 +148,8 @@ export const LandingPage: React.FC = () => {
                         type="text"
                         value={assistQuery}
                         onChange={(e) => setAssistQuery(e.target.value)}
-                        placeholder="I need help with..."
-                        className="w-full text-xs text-[#202720] bg-transparent focus:outline-none placeholder:text-bb-ink-subtle"
+                        placeholder="I need help with utility bills, grants..."
+                        className="w-full text-xs text-[#202720] bg-transparent focus:outline-none placeholder:text-black/40"
                       />
                       <button
                         type="submit"

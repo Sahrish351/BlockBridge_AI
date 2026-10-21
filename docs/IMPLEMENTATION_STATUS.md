@@ -42,7 +42,35 @@ The platform provides four dedicated, role-specific workspaces matching the offi
 
 ---
 
-## 4. Interaction & Functional Verification
+## 4. Final Polish, Persistent Navigation & Supabase Integration (October 21, 2026)
+
+### A. Homepage AI Assistant Clean-Up
+- **Single Polished Card:** Removed duplicate background card/label previously baked into bitmap assets.
+- **Visual Composition:** Replaced composite visual with authentic Unsplash local business photography (`photo-1556740738-b6a63e27c4df`), floating a responsive AI Assistant card with "Online Navigator" live indicator, description, and direct input.
+- **Intake Handoff:** Entering queries or clicking pre-filled prompts directly hands off to `/find-support?description=...`, auto-detecting small business or resident keywords.
+
+### B. Persistent Dashboard Shell (`#143D2F`) & Role-Specific Sidebars
+- **Shell Continuity:** All subpaths (`/app/*`, `/admin/*`) now consistently render inside the `DashboardLayout` shell. The dark forest-green sidebar (`#143D2F`) and sticky header remain visible across page refreshes, direct URLs, and subpage navigation.
+- **Exact Role Navigation:**
+  - **Resident:** Dashboard (`/app`), Find Support (`/app/find-support`), My Action Plans (`/app/plans`), Saved Resources (`/app/saved-resources`), Messages (`/app/messages`), My Profile (`/app/profile`), Settings (`/app/settings`).
+  - **Small Business:** Dashboard (`/app`), Find Business Support (`/app/find-support?type=business`), Funding & Opportunities (`/app/funding`), My Action Plans (`/app/plans`), Saved Resources (`/app/saved-resources`), Business Profile (`/app/business-profile`), Messages (`/app/messages`), Settings (`/app/settings`).
+  - **Community Partner:** Dashboard (`/app`), Submit a Resource (`/app/submit-resource`), My Submissions (`/app/submissions`), Submission History (`/app/submission-history`), Messages / Feedback (`/app/messages`), Organization Profile (`/app/organization-profile`), Standards & Guidelines (`/app/standards`), Settings (`/app/settings`).
+  - **Admin / Civic Reviewer:** Dashboard (`/admin`), Review Queue (`/admin/queue`), Partner Submissions (`/admin/submissions`), Resource Registry (`/admin/resources`), Error Reports (`/admin/reports`), Audit Logs (`/admin/audit`), User & Role Management (`/admin/users`), Verification Standards (`/admin/standards`), Settings (`/admin/settings`).
+
+### C. Dashboard Whitespace Compression
+- **Business Dashboard:** Compacted profile hero header to `h-28 md:h-32`, integrated profile button alongside title, and unified KPI cards into one compact row.
+- **Resident Dashboard:** Reduced hero height to `h-44 md:h-auto` with tightened `space-y-6` hierarchy, keeping active checklist steps in immediate view.
+- **Partner & Admin Dashboards:** Unified card padding to `p-5` with compact metric grids (`gap-3.5`).
+
+### D. Supabase Production Migration & Database Grounding
+- **Migration File:** Created `supabase/migrations/20261021000000_initial_schema.sql` covering tables `profiles`, `resources`, `saved_resources`, `action_plans`, `plan_steps`, `partner_submissions`, `resource_reports`, and `audit_logs`.
+- **Security:** Complete Row Level Security (RLS) policies enforcing user data isolation and civic reviewer role checks.
+- **Seed Data:** Populated with 12 verified Atlanta community assistance resources.
+- **Resilience:** Offline-first fallback in `apiService.ts` and SQLite backend ensures uninterrupted demo operation if cloud connectivity is pending.
+
+---
+
+## 5. Interaction & Functional Verification
 
 | Control / Flow | Expected Action | Verification Result |
 | :--- | :--- | :--- |

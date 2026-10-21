@@ -61,48 +61,48 @@ export const BusinessDashboardView: React.FC = () => {
   const completedCount = roadmap.filter(s => s.status === 'Completed').length;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header */}
       <div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#202720] tracking-tight">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
           Welcome back, Marcus
         </h1>
-        <p className="text-sm text-black/60 mt-1">
+        <p className="text-xs sm:text-sm text-black/60 mt-0.5">
           Here's your business support overview and upcoming opportunities.
         </p>
       </div>
 
-      {/* Profile Banner Card */}
-      <div className="bg-white rounded-3xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row items-stretch">
-        <div className="flex-1 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#143D2F] text-white flex items-center justify-center font-serif text-2xl font-bold shadow-md flex-shrink-0">
+      {/* Profile Banner Card - Compact, balanced height without empty vertical space */}
+      <div className="bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between">
+        <div className="p-5 sm:p-6 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-[#143D2F] text-white flex items-center justify-center font-serif text-xl font-bold shadow-sm flex-shrink-0">
               V
             </div>
             <div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] leading-snug">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#202720] leading-tight">
                 Vance Community Roasters & Café
               </h2>
               <div className="flex items-center gap-1.5 text-xs text-black/60 mt-1">
                 <MapPin className="w-3.5 h-3.5 text-[#246B52]" />
-                <span>West End, Atlanta</span>
+                <span>West End, Atlanta (30310)</span>
               </div>
             </div>
           </div>
 
           <div>
             <Link
-              to="/app?tab=business-profile"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#143D2F] text-white text-xs sm:text-sm font-semibold hover:bg-[#1E5743] transition-colors shadow-sm"
+              to="/app/business-profile"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors shadow-sm whitespace-nowrap"
             >
               <span>View Business Profile</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
 
-        {/* Café/Barista Photo */}
-        <div className="md:w-5/12 h-56 md:h-auto relative overflow-hidden bg-stone-100 flex-shrink-0">
+        {/* Café/Barista Photo - Compact horizontal balance */}
+        <div className="w-full md:w-64 h-36 md:h-28 relative overflow-hidden bg-stone-100 flex-shrink-0">
           <img
             src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80"
             alt="Marcus Vance at Vance Community Roasters & Café"
@@ -111,19 +111,19 @@ export const BusinessDashboardView: React.FC = () => {
         </div>
       </div>
 
-      {/* 4 KPI Cards in a Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 4 KPI Cards in a Row - Compact, uniform height */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Card 1: Capital Readiness */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
+        <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <span className="text-xs font-medium text-black/60">Capital Readiness</span>
           <div className="font-serif text-2xl font-bold text-[#202720]">
             $10,000 – $40,000
           </div>
-          <span className="text-[11px] text-black/40">Target grant range (illustrative)</span>
+          <span className="text-[10px] text-black/50">Target grant range (Illustrative Demo)</span>
         </div>
 
         {/* Card 2: Prerequisites */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
+        <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <span className="text-xs font-medium text-black/60">Prerequisites</span>
           <div className="font-serif text-2xl font-bold text-[#202720]">
             {completedCount} of 3 completed
@@ -137,7 +137,7 @@ export const BusinessDashboardView: React.FC = () => {
         </div>
 
         {/* Card 3: Next Deadline */}
-        <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
+        <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-black/60">Next Cohort Target</span>
             <Calendar className="w-4 h-4 text-[#E98770]" />
@@ -145,25 +145,25 @@ export const BusinessDashboardView: React.FC = () => {
           <div className="font-serif text-2xl font-bold text-[#202720]">
             Nov 15, 2026
           </div>
-          <span className="text-[11px] text-black/50" title="RICE admits businesses through quarterly cohort cycles">
-            RICE Fall Cohort Target (Quarterly Rolling)
+          <span className="text-[10px] text-black/50" title="RICE admits businesses through quarterly cohort cycles">
+            RICE Fall Cohort (Quarterly Rolling)
           </span>
         </div>
 
         {/* Card 4: Find Business Support (Green Card with +) */}
         <Link
-          to="/find-support?type=business"
-          className="bg-[#143D2F] text-white rounded-2xl p-5 shadow-sm hover:bg-[#1C503E] transition-all flex flex-col justify-between space-y-3 group"
+          to="/app/find-support?type=business"
+          className="bg-[#143D2F] text-white rounded-2xl p-4 sm:p-4.5 shadow-sm hover:bg-[#1C503E] transition-all flex flex-col justify-between space-y-2 group"
         >
           <div className="flex items-start justify-between">
-            <span className="font-serif text-lg font-bold text-white group-hover:translate-x-0.5 transition-transform">
+            <span className="font-serif text-base sm:text-lg font-bold text-white group-hover:translate-x-0.5 transition-transform">
               Find Business Support
             </span>
-            <div className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
-              <Plus className="w-4 h-4" />
+            <div className="w-6 h-6 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
+              <Plus className="w-3.5 h-3.5" />
             </div>
           </div>
-          <p className="text-xs text-white/80 leading-relaxed">
+          <p className="text-[11px] text-white/80 leading-snug">
             Discover grants, training & business resources
           </p>
         </Link>

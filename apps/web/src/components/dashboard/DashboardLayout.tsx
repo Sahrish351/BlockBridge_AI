@@ -19,7 +19,10 @@ import {
   AlertTriangle,
   History,
   ChevronDown,
-  Check
+  Check,
+  DollarSign,
+  BookOpen,
+  Users
 } from 'lucide-react';
 import { useAuth, UserRole } from '../../context/AuthContext';
 
@@ -99,41 +102,47 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     switch (activeRole) {
       case 'resident':
         return [
-          { label: 'Dashboard', icon: LayoutDashboard, path: '/app', active: true },
-          { label: 'Find Support', icon: Search, path: '/find-support' },
+          { label: 'Dashboard', icon: LayoutDashboard, path: '/app' },
+          { label: 'Find Support', icon: Search, path: '/app/find-support' },
           { label: 'My Action Plans', icon: FileText, path: '/app/plans' },
-          { label: 'Saved Resources', icon: Bookmark, path: '/resources?saved=true' },
-          { label: 'Messages', icon: MessageSquare, path: '/app?tab=messages' },
-          { label: 'Profile', icon: User, path: '/app?tab=profile' },
+          { label: 'Saved Resources', icon: Bookmark, path: '/app/saved-resources' },
+          { label: 'Messages', icon: MessageSquare, path: '/app/messages' },
+          { label: 'My Profile', icon: User, path: '/app/profile' },
+          { label: 'Settings', icon: Settings, path: '/app/settings' },
         ];
       case 'small_business':
         return [
-          { label: 'Dashboard', icon: LayoutDashboard, path: '/app', active: true },
-          { label: 'Find Support', icon: Search, path: '/find-support?type=business' },
+          { label: 'Dashboard', icon: LayoutDashboard, path: '/app' },
+          { label: 'Find Business Support', icon: Search, path: '/app/find-support?type=business' },
+          { label: 'Funding & Opportunities', icon: DollarSign, path: '/app/funding' },
           { label: 'My Action Plans', icon: FileText, path: '/app/plans' },
-          { label: 'Saved Resources', icon: Bookmark, path: '/resources?saved=true' },
-          { label: 'Messages', icon: MessageSquare, path: '/app?tab=messages' },
-          { label: 'Business Profile', icon: Building2, path: '/app?tab=business-profile' },
-          { label: 'Settings', icon: Settings, path: '/app?tab=settings' },
+          { label: 'Saved Resources', icon: Bookmark, path: '/app/saved-resources' },
+          { label: 'Business Profile', icon: Building2, path: '/app/business-profile' },
+          { label: 'Messages', icon: MessageSquare, path: '/app/messages' },
+          { label: 'Settings', icon: Settings, path: '/app/settings' },
         ];
       case 'partner':
         return [
-          { label: 'Dashboard', icon: LayoutDashboard, path: '/app', active: true },
-          { label: 'Submit Resource', icon: PlusCircle, path: '/community-partners' },
-          { label: 'My Submissions', icon: Layers, path: '/app?tab=submissions' },
-          { label: 'Messages', icon: MessageSquare, path: '/app?tab=messages' },
-          { label: 'Resources', icon: Bookmark, path: '/resources' },
-          { label: 'Profile', icon: User, path: '/app?tab=profile' },
+          { label: 'Dashboard', icon: LayoutDashboard, path: '/app' },
+          { label: 'Submit a Resource', icon: PlusCircle, path: '/app/submit-resource' },
+          { label: 'My Submissions', icon: Layers, path: '/app/submissions' },
+          { label: 'Submission History', icon: History, path: '/app/submission-history' },
+          { label: 'Messages / Feedback', icon: MessageSquare, path: '/app/messages' },
+          { label: 'Organization Profile', icon: Building2, path: '/app/organization-profile' },
+          { label: 'Standards & Guidelines', icon: BookOpen, path: '/app/standards' },
+          { label: 'Settings', icon: Settings, path: '/app/settings' },
         ];
       case 'admin':
         return [
-          { label: 'Dashboard', icon: LayoutDashboard, path: '/app', active: true },
-          { label: 'Review Queue', icon: ShieldCheck, path: '/admin', badge: '4' },
-          { label: 'Resource Management', icon: Layers, path: '/resources' },
-          { label: 'Partner Submissions', icon: PlusCircle, path: '/admin?tab=submissions' },
-          { label: 'Error Reports', icon: AlertTriangle, path: '/admin?tab=reports' },
-          { label: 'Audit Log', icon: History, path: '/admin?tab=audit' },
-          { label: 'Settings', icon: Settings, path: '/app?tab=settings' },
+          { label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
+          { label: 'Review Queue', icon: ShieldCheck, path: '/admin/queue', badge: '4' },
+          { label: 'Partner Submissions', icon: PlusCircle, path: '/admin/submissions' },
+          { label: 'Resource Registry', icon: Layers, path: '/admin/resources' },
+          { label: 'Error Reports', icon: AlertTriangle, path: '/admin/reports', badge: '2' },
+          { label: 'Audit Logs', icon: History, path: '/admin/audit' },
+          { label: 'User & Role Management', icon: Users, path: '/admin/users' },
+          { label: 'Verification Standards', icon: ShieldCheck, path: '/admin/standards' },
+          { label: 'Settings', icon: Settings, path: '/admin/settings' },
         ];
     }
   };
@@ -198,7 +207,40 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           <nav className="p-4 space-y-1.5 flex-1">
             {navLinks.map((item) => {
               const Icon = item.icon;
-              const isCurrent = item.active || (item.path !== '/app' && location.pathname === item.path);
+              const isCurrent = (() => {
+                const currentPath = location.pathname;
+                const currentSearch = location.search;
+
+                // Query-specific matches (e.g. /app/find-support?type=business)
+                if (item.path.includes('?')) {
+                  const [itemPath, itemQuery] = item.path.split('?');
+                  return currentPath === itemPath && currentSearch.includes(itemQuery);
+                }
+
+                // Root dashboard matches
+                if (item.path === '/app') {
+                  return (currentPath === '/app' || currentPath === '/app/') && !new URLSearchParams(currentSearch).get('tab');
+                }
+                if (item.path === '/admin') {
+                  return (currentPath === '/admin' || currentPath === '/admin/') && !new URLSearchParams(currentSearch).get('tab');
+                }
+
+                // Exact path match
+                if (currentPath === item.path) return true;
+
+                // Subpath match (e.g. /app/plans/plan-01 matches /app/plans)
+                if (item.path !== '/app' && item.path !== '/admin' && currentPath.startsWith(item.path)) {
+                  return true;
+                }
+
+                // Query param fallback (?tab=messages)
+                const lastSegment = item.path.split('/').pop()?.split('?')[0];
+                if (lastSegment && new URLSearchParams(currentSearch).get('tab') === lastSegment) {
+                  return true;
+                }
+
+                return false;
+              })();
               return (
                 <Link
                   key={item.label}

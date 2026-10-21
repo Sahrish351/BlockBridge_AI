@@ -37,96 +37,96 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
   const savedCount = savedResources.length > 0 ? savedResources.length : 5;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Greeting Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#202720] tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
             Good morning, Keisha
           </h1>
-          <p className="text-sm text-black/60 mt-1">
+          <p className="text-xs sm:text-sm text-black/60 mt-0.5">
             Here's your personalized support overview and next steps.
           </p>
         </div>
 
         {/* Location Pill */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EBF3ED] border border-[#C5DEC8] text-[#143D2F] text-xs font-semibold self-start sm:self-center">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EBF3ED] border border-[#C5DEC8] text-[#143D2F] text-xs font-semibold self-start sm:self-center shadow-xs">
           <MapPin className="w-3.5 h-3.5 text-[#246B52]" />
           <span>Bankhead, Atlanta</span>
         </div>
       </div>
 
       {/* Progress Hero Banner & Quick Stats Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Hero: Split Progress Card */}
-        <div className="lg:col-span-8 bg-white rounded-3xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row">
-          <div className="md:w-5/12 h-56 md:h-auto relative overflow-hidden bg-stone-100 flex-shrink-0">
+        <div className="lg:col-span-8 bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row">
+          <div className="md:w-5/12 h-44 md:h-auto relative overflow-hidden bg-stone-100 flex-shrink-0">
             <img
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
               alt="Keisha Jenkins smiling in community"
               className="w-full h-full object-cover object-top"
             />
           </div>
-          <div className="md:w-7/12 p-6 sm:p-8 flex flex-col justify-between bg-[#F4F8F5]">
-            <div className="space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#246B52] bg-white px-2.5 py-1 rounded-full border border-[#DCEBE1] inline-block">
+          <div className="md:w-7/12 p-5 sm:p-6 flex flex-col justify-between bg-[#F4F8F5]">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#246B52] bg-white px-2.5 py-0.5 rounded-full border border-[#DCEBE1] inline-block">
                 Action Plan Active
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720]">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#202720]">
                 You're making progress!
               </h2>
-              <p className="text-xs sm:text-sm text-black/60 leading-relaxed">
+              <p className="text-xs text-black/60 leading-relaxed">
                 Keep going — you have active plans and new resources available to support your family.
               </p>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-4">
               <Link
-                to="/find-support"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#143D2F] text-white text-xs sm:text-sm font-semibold hover:bg-[#1E5743] transition-colors shadow-sm"
+                to="/app/find-support"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors shadow-sm"
               >
                 <span>Find Support</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
         </div>
 
         {/* Right Stats: Your Quick Stats */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-4">
-          <h3 className="font-bold text-sm text-[#202720] tracking-tight">
+        <div className="lg:col-span-4 bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-3">
+          <h3 className="font-bold text-xs uppercase tracking-wider text-black/60">
             Your Quick Stats
           </h3>
 
-          <div className="space-y-3.5 flex-1 flex flex-col justify-around">
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center">
-                  <Users className="w-4 h-4" />
+          <div className="space-y-2.5 flex-1 flex flex-col justify-center">
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-[#EBF3ED] text-[#246B52] flex items-center justify-center">
+                  <Users className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#202720]">Active Action Plans</span>
               </div>
-              <span className="font-serif text-xl font-bold text-[#202720]">{activePlanCount}</span>
+              <span className="font-serif text-lg font-bold text-[#202720]">{activePlanCount}</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center">
-                  <Bookmark className="w-4 h-4" />
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-[#EBF3ED] text-[#246B52] flex items-center justify-center">
+                  <Bookmark className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#202720]">Saved Resources</span>
               </div>
-              <span className="font-serif text-xl font-bold text-[#202720]">{savedCount}</span>
+              <span className="font-serif text-lg font-bold text-[#202720]">{savedCount}</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#FDEEE9] text-[#E98770] flex items-center justify-center">
-                  <Calendar className="w-4 h-4" />
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-[#FDEEE9] text-[#E98770] flex items-center justify-center">
+                  <Calendar className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#202720]">Upcoming Deadlines</span>
               </div>
-              <span className="font-serif text-xl font-bold text-[#202720]">1</span>
+              <span className="font-serif text-lg font-bold text-[#202720]">1</span>
             </div>
           </div>
         </div>

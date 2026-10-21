@@ -15,8 +15,13 @@ import { apiService } from '../services/apiService';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
 
-export const ActionPlanPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+interface ActionPlanPageProps {
+  planId?: string;
+}
+
+export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlanId }) => {
+  const { id: routeId } = useParams<{ id: string }>();
+  const id = propPlanId || routeId;
   const [plan, setPlan] = useState<ActionPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
