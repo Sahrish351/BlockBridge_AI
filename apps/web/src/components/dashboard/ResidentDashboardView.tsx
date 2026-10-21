@@ -15,13 +15,11 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { ActionPlan, Resource } from '../../types';
-
 interface ResidentDashboardViewProps {
   plans: ActionPlan[];
   savedResources: Resource[];
   onContinuePlan?: (planId: string) => void;
 }
-
 export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
   plans,
   savedResources,
@@ -32,13 +30,11 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
   const totalTasks = residentPlan?.tasks?.length || 4;
   const completedTasks = residentPlan?.tasks ? residentPlan.tasks.filter(t => t.status === 'Completed').length : 2;
   const progressPct = Math.round((completedTasks / totalTasks) * 100);
-
   const activePlanCount = plans.length > 0 ? plans.length : 2;
   const savedCount = savedResources.length > 0 ? savedResources.length : 5;
-
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Top Greeting Header */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
@@ -48,14 +44,12 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             Here's your personalized support overview and next steps.
           </p>
         </div>
-
         {/* Location Pill */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EBF3ED] border border-[#C5DEC8] text-[#143D2F] text-xs font-semibold self-start sm:self-center shadow-xs">
           <MapPin className="w-3.5 h-3.5 text-[#246B52]" />
           <span>Bankhead, Atlanta</span>
         </div>
       </div>
-
       {/* Progress Hero Banner & Quick Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Hero: Split Progress Card */}
@@ -79,7 +73,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 Keep going — you have active plans and new resources available to support your family.
               </p>
             </div>
-
             <div className="pt-4">
               <Link
                 to="/app/find-support"
@@ -91,13 +84,11 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Right Stats: Your Quick Stats */}
+        {}
         <div className="lg:col-span-4 bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-3">
           <h3 className="font-bold text-xs uppercase tracking-wider text-black/60">
             Your Quick Stats
           </h3>
-
           <div className="space-y-2.5 flex-1 flex flex-col justify-center">
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
               <div className="flex items-center gap-2.5">
@@ -108,7 +99,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               </div>
               <span className="font-serif text-lg font-bold text-[#202720]">{activePlanCount}</span>
             </div>
-
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-[#EBF3ED] text-[#246B52] flex items-center justify-center">
@@ -118,7 +108,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               </div>
               <span className="font-serif text-lg font-bold text-[#202720]">{savedCount}</span>
             </div>
-
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA]/60">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-[#FDEEE9] text-[#E98770] flex items-center justify-center">
@@ -131,10 +120,9 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Middle Row: Your Next Steps (Left) & Recommended for You (Right) */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Your Next Steps */}
+        {}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -145,7 +133,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div>
@@ -161,7 +148,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                   Energy assistance for winter heating and cooling bill stabilization.
                 </p>
               </div>
-
               <Link
                 to={`/app/plans/${targetPlanId}`}
                 onClick={() => onContinuePlan?.(targetPlanId)}
@@ -170,8 +156,7 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 Continue Plan
               </Link>
             </div>
-
-            {/* Progress Bar & Steps Status */}
+            {}
             <div className="space-y-2 pt-2 border-t border-[#E8E4DA]/60">
               <div className="flex items-center justify-between text-xs font-medium text-black/60">
                 <span>{completedTasks} of {totalTasks} steps completed</span>
@@ -184,8 +169,7 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 />
               </div>
             </div>
-
-            {/* Step Checkpoints preview */}
+            {}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-black/70 pt-1">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#246B52] flex-shrink-0" />
@@ -206,8 +190,7 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Right Column: Recommended for You */}
+        {}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -217,7 +200,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               View All
             </Link>
           </div>
-
           <div className="bg-white rounded-3xl p-5 border border-[#E8E4DA] shadow-sm space-y-3">
             {[
               {
@@ -265,7 +247,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#EBF3ED] text-[#246B52]">
                       {item.badge}
@@ -278,10 +259,9 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Bottom Row: Saved Resources (Left) & Recent Activity (Right) */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Saved Resources Mini-Cards */}
+        {}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -291,7 +271,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               View All
             </Link>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
@@ -331,7 +310,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
               );
             })}
           </div>
-
           <div className="text-right">
             <Link to="/resources?saved=true" className="text-xs font-semibold text-[#246B52] hover:underline inline-flex items-center gap-1">
               <span>More Saved</span>
@@ -339,8 +317,7 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             </Link>
           </div>
         </div>
-
-        {/* Recent Activity Log */}
+        {}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -348,7 +325,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             </h3>
             <span className="text-xs text-black/40">View All</span>
           </div>
-
           <div className="bg-white rounded-3xl p-5 border border-[#E8E4DA] shadow-sm space-y-4">
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -362,7 +338,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 <p className="text-black/60 text-[11px]">Atlanta Community Food Bank</p>
               </div>
             </div>
-
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -375,7 +350,6 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
                 <p className="text-black/60 text-[11px]">Utility Assistance Plan</p>
               </div>
             </div>
-
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 rounded-full bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />

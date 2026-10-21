@@ -22,7 +22,6 @@ import {
   CheckCircle2,
   ChevronRight
 } from 'lucide-react';
-
 export const DashboardPage: React.FC = () => {
   const { role, signInDemoRole } = useAuth();
   const location = useLocation();
@@ -32,8 +31,6 @@ export const DashboardPage: React.FC = () => {
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [savedResourceIds, setSavedResourceIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Message State
   const [messageDraft, setMessageDraft] = useState('');
   const [messages, setMessages] = useState([
     {
@@ -49,8 +46,6 @@ export const DashboardPage: React.FC = () => {
       text: 'Intake documentation received. If you need assistance with proof of residency or business registration, feel free to reply directly here.'
     }
   ]);
-
-  // Partner Submissions State
   const [partnerSubmissions, setPartnerSubmissions] = useState([
     {
       id: 'sub-01',
@@ -93,8 +88,6 @@ export const DashboardPage: React.FC = () => {
       url: 'https://acfb.org'
     }
   ]);
-
-  // Partner Submission Form State
   const [newSubName, setNewSubName] = useState('');
   const [newSubOrg, setNewSubOrg] = useState('Westside Future Fund');
   const [newSubCategory, setNewSubCategory] = useState('Housing');
@@ -103,19 +96,13 @@ export const DashboardPage: React.FC = () => {
   const [newSubEligibility, setNewSubEligibility] = useState('');
   const [submittingPartner, setSubmittingPartner] = useState(false);
   const [subSuccessMsg, setSubSuccessMsg] = useState(false);
-
-  // Settings State
   const [notifyDeadlines, setNotifyDeadlines] = useState(true);
   const [notifyNewMatches, setNotifyNewMatches] = useState(true);
   const [dataPrivacyMode, setDataPrivacyMode] = useState(true);
-
-  // Extract Route and Tabs
   const pathname = location.pathname;
   const isAdminRoute = pathname.startsWith('/admin');
   const roleParam = searchParams.get('role');
   const tabParam = searchParams.get('tab');
-
-  // Determine section
   const getActiveSection = (): string => {
     if (tabParam) return tabParam;
     if (pathname === '/app' || pathname === '/app/' || pathname === '/admin' || pathname === '/admin/') {
@@ -125,14 +112,10 @@ export const DashboardPage: React.FC = () => {
     const firstSegment = clean.split('/')[0];
     return firstSegment || 'overview';
   };
-
   const activeSection = getActiveSection();
-
-  // Extract Plan ID if on /app/plans/:id
   const planIdFromPath = pathname.startsWith('/app/plans/') 
     ? pathname.replace('/app/plans/', '').split('/')[0] 
     : undefined;
-
   const normalizedRole: UserRole = 
     isAdminRoute ? 'admin' :
     roleParam === 'business' ? 'small_business' :
@@ -140,9 +123,7 @@ export const DashboardPage: React.FC = () => {
     roleParam === 'admin' ? 'admin' :
     roleParam === 'resident' ? 'resident' :
     (role || 'resident');
-
   const [activeRole, setActiveRole] = useState<UserRole>(normalizedRole);
-
   useEffect(() => {
     if (isAdminRoute) {
       setActiveRole('admin');
@@ -155,7 +136,6 @@ export const DashboardPage: React.FC = () => {
       setActiveRole(role);
     }
   }, [isAdminRoute, roleParam, role]);
-
   const handleRoleChange = async (newRole: UserRole) => {
     setActiveRole(newRole);
     const paramVal = newRole === 'small_business' ? 'business' : newRole;
@@ -166,7 +146,6 @@ export const DashboardPage: React.FC = () => {
     });
     await signInDemoRole(newRole);
   };
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageDraft.trim()) return;
@@ -181,7 +160,6 @@ export const DashboardPage: React.FC = () => {
     ]);
     setMessageDraft('');
   };
-
   const handlePartnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSubName.trim()) return;
@@ -202,7 +180,6 @@ export const DashboardPage: React.FC = () => {
     } catch {
       await new Promise(r => setTimeout(r, 400));
     }
-
     setPartnerSubmissions(prev => [
       {
         id: genId,
@@ -216,7 +193,6 @@ export const DashboardPage: React.FC = () => {
       },
       ...prev
     ]);
-
     setSubmittingPartner(false);
     setSubSuccessMsg(true);
     setTimeout(() => {
@@ -228,7 +204,6 @@ export const DashboardPage: React.FC = () => {
       navigate('/app/submissions');
     }, 1200);
   };
-
   const handleToggleSave = async (resourceId: string) => {
     const isSaved = savedResourceIds.includes(resourceId);
     setSavedResourceIds(prev => 
@@ -240,7 +215,6 @@ export const DashboardPage: React.FC = () => {
       console.warn('Failed to toggle save on backend:', err);
     }
   };
-
   const loadDashboardData = async () => {
     setLoading(true);
     try {
@@ -249,7 +223,6 @@ export const DashboardPage: React.FC = () => {
         apiService.getSavedResourceIds(),
         apiService.getResources(),
       ]);
-
       setPlans(allPlans);
       setSavedResourceIds(savedIds);
       setAllResources(allRes);
@@ -259,13 +232,10 @@ export const DashboardPage: React.FC = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     loadDashboardData();
   }, []);
-
   const savedResourcesList = allResources.filter(r => savedResourceIds.includes(r.id));
-
   return (
     <DashboardLayout activeRole={activeRole} onRoleChange={handleRoleChange}>
       {loading ? (
@@ -273,10 +243,8 @@ export const DashboardPage: React.FC = () => {
           <div className="w-8 h-8 rounded-full border-2 border-[#143D2F] border-t-transparent animate-spin" />
         </div>
       ) : activeSection === 'plans' ? (
-        /* ==================== ACTION PLANS VIEW ==================== */
         <ActionPlanPage planId={planIdFromPath} />
       ) : activeSection === 'find-support' ? (
-        /* ==================== FIND SUPPORT INTAKE VIEW ==================== */
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -295,7 +263,6 @@ export const DashboardPage: React.FC = () => {
           <FindSupportIntakePage />
         </div>
       ) : activeSection === 'saved-resources' ? (
-        /* ==================== SAVED RESOURCES VIEW ==================== */
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -318,7 +285,6 @@ export const DashboardPage: React.FC = () => {
               <span>Explore More Resources</span>
             </Link>
           </div>
-
           {savedResourcesList.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 border border-[#E8E4DA] text-center space-y-4 max-w-xl mx-auto">
               <div className="w-12 h-12 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] text-black/40 flex items-center justify-center mx-auto">
@@ -363,7 +329,6 @@ export const DashboardPage: React.FC = () => {
                       {res.summary}
                     </p>
                   </div>
-
                   <div className="pt-3 border-t border-[#E8E4DA] flex items-center justify-between gap-2">
                     <Link
                       to={`/resources/${res.id}`}
@@ -390,7 +355,6 @@ export const DashboardPage: React.FC = () => {
           )}
         </div>
       ) : activeSection === 'messages' ? (
-        /* ==================== MESSAGES VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -404,7 +368,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Direct messages from community navigators, caseworkers, and civic reviewers.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-6">
             <div className="space-y-4 max-h-96 overflow-y-auto pr-1">
               {messages.map((msg) => (
@@ -424,7 +387,6 @@ export const DashboardPage: React.FC = () => {
                 </div>
               ))}
             </div>
-
             <form onSubmit={handleSendMessage} className="flex gap-2 pt-2 border-t border-[#E8E4DA]">
               <input
                 type="text"
@@ -444,7 +406,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'profile' ? (
-        /* ==================== RESIDENT PROFILE VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -458,7 +419,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Verified profile information used for program matching and action plan generation.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E4DA] shadow-sm space-y-6 text-xs">
             <div className="flex items-center gap-4 pb-6 border-b border-[#E8E4DA]">
               <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 flex-shrink-0 border border-[#E8E4DA]">
@@ -475,7 +435,6 @@ export const DashboardPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                 <span className="text-black/50 block text-[11px]">Primary Address</span>
@@ -497,7 +456,6 @@ export const DashboardPage: React.FC = () => {
                 <span className="font-bold text-[#202720]">Utility Assistance, Childcare, Career Transition</span>
               </div>
             </div>
-
             <div className="pt-2 flex gap-3">
               <Link
                 to="/app/find-support"
@@ -509,7 +467,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'business-profile' ? (
-        /* ==================== BUSINESS PROFILE VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -523,7 +480,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Verified commercial profile used for small business grants, coaching, and supplier programs.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E4DA] shadow-sm space-y-6 text-xs">
             <div className="flex items-center gap-4 pb-6 border-b border-[#E8E4DA]">
               <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 flex-shrink-0 border border-[#E8E4DA]">
@@ -540,7 +496,6 @@ export const DashboardPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                 <span className="text-black/50 block text-[11px]">Commercial Location</span>
@@ -562,7 +517,6 @@ export const DashboardPage: React.FC = () => {
                 <span className="font-bold text-[#202720]">4 Full-time, 2 Part-time</span>
               </div>
             </div>
-
             <div className="pt-2 flex gap-3">
               <Link
                 to="/app/funding"
@@ -574,7 +528,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'organization-profile' ? (
-        /* ==================== ORGANIZATION PROFILE VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -588,7 +541,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Verified community organization profile for publishing local programs.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E4DA] shadow-sm space-y-6 text-xs">
             <div className="flex items-center gap-4 pb-6 border-b border-[#E8E4DA]">
               <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#143D2F] text-white flex items-center justify-center font-serif text-2xl font-bold">
@@ -601,7 +553,6 @@ export const DashboardPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                 <span className="text-black/50 block text-[11px]">Primary Coverage Area</span>
@@ -623,7 +574,6 @@ export const DashboardPage: React.FC = () => {
                 <span className="font-bold text-[#202720]">coordinator@westsidefuturefund.org</span>
               </div>
             </div>
-
             <div className="pt-2 flex gap-3">
               <Link
                 to="/app/submit-resource"
@@ -635,7 +585,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'funding' ? (
-        /* ==================== FUNDING & OPPORTUNITIES VIEW ==================== */
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -651,7 +600,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               {
@@ -703,7 +651,6 @@ export const DashboardPage: React.FC = () => {
                   <p className="text-xs font-semibold text-black/50">{opp.org}</p>
                   <p className="text-xs text-black/70 leading-relaxed">{opp.eligibility}</p>
                 </div>
-
                 <div className="pt-3 border-t border-[#E8E4DA] flex items-center justify-between text-xs">
                   <span className="text-black/50">Deadline: <strong className="text-[#202720]">{opp.deadline}</strong></span>
                   <a
@@ -721,7 +668,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'submit-resource' ? (
-        /* ==================== SUBMIT A RESOURCE VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -735,7 +681,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Community partners can propose verified programs to be audited and published in BlockBridge AI.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E4DA] shadow-sm space-y-6 text-xs">
             {subSuccessMsg && (
               <div className="p-4 rounded-2xl bg-[#EBF3ED] border border-[#C5DEC8] text-[#143D2F] font-semibold flex items-center gap-2">
@@ -743,7 +688,6 @@ export const DashboardPage: React.FC = () => {
                 <span>Resource submitted successfully! Awaiting civic provenance review.</span>
               </div>
             )}
-
             <form onSubmit={handlePartnerSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-[#202720] mb-1">Program / Resource Name *</label>
@@ -756,7 +700,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-[#E8E4DA] text-xs focus:ring-2 focus:ring-[#246B52] outline-none"
                 />
               </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#202720] mb-1">Organization Name *</label>
@@ -784,7 +727,6 @@ export const DashboardPage: React.FC = () => {
                   </select>
                 </div>
               </div>
-
               <div>
                 <label className="block text-xs font-bold text-[#202720] mb-1">Official Verification URL *</label>
                 <input
@@ -796,7 +738,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-[#E8E4DA] text-xs focus:ring-2 focus:ring-[#246B52] outline-none"
                 />
               </div>
-
               <div>
                 <label className="block text-xs font-bold text-[#202720] mb-1">Summary of Assistance</label>
                 <textarea
@@ -807,7 +748,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-[#E8E4DA] text-xs focus:ring-2 focus:ring-[#246B52] outline-none"
                 />
               </div>
-
               <div>
                 <label className="block text-xs font-bold text-[#202720] mb-1">Eligibility Criteria</label>
                 <input
@@ -818,7 +758,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-[#E8E4DA] text-xs focus:ring-2 focus:ring-[#246B52] outline-none"
                 />
               </div>
-
               <div className="pt-3">
                 <button
                   type="submit"
@@ -833,7 +772,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'submissions' || activeSection === 'submission-history' ? (
-        /* ==================== SUBMISSIONS & HISTORY VIEW ==================== */
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -858,7 +796,6 @@ export const DashboardPage: React.FC = () => {
               <span>Submit New Resource</span>
             </Link>
           </div>
-
           <div className="bg-white rounded-3xl border border-[#E8E4DA] overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -900,7 +837,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'standards' ? (
-        /* ==================== STANDARDS & GUIDELINES VIEW ==================== */
         <div className="max-w-4xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -914,7 +850,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">The BlockBridge 5-Point Civic Trust Standard required for all published community resources.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E4DA] shadow-sm space-y-6 text-xs">
             <div className="space-y-4">
               {[
@@ -951,7 +886,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : activeSection === 'settings' ? (
-        /* ==================== SETTINGS VIEW ==================== */
         <div className="max-w-3xl space-y-6 animate-in fade-in duration-150">
           <div className="flex items-center gap-3">
             <Link
@@ -965,7 +899,6 @@ export const DashboardPage: React.FC = () => {
               <p className="text-xs text-black/60">Manage notification alerts, privacy protections, and accessibility preferences.</p>
             </div>
           </div>
-
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-5 text-xs">
             <div className="space-y-3">
               <label className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] cursor-pointer">
@@ -980,7 +913,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-4 h-4 text-[#246B52] rounded accent-[#246B52]" 
                 />
               </label>
-
               <label className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] cursor-pointer">
                 <div>
                   <span className="font-bold text-[#202720] block">New Verified Opportunities</span>
@@ -993,7 +925,6 @@ export const DashboardPage: React.FC = () => {
                   className="w-4 h-4 text-[#246B52] rounded accent-[#246B52]" 
                 />
               </label>
-
               <label className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] cursor-pointer">
                 <div>
                   <span className="font-bold text-[#202720] block">Data Privacy Mode</span>
@@ -1010,10 +941,8 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       ) : isAdminRoute && (activeSection === 'queue' || activeSection === 'resources' || activeSection === 'reports' || activeSection === 'audit' || activeSection === 'users') ? (
-        /* ==================== ADMIN SUBVIEWS ==================== */
         <AdminDashboardView />
       ) : (
-        /* ==================== ROOT OVERVIEW DASHBOARDS ==================== */
         <>
           {activeRole === 'resident' && (
             <ResidentDashboardView 
@@ -1021,15 +950,12 @@ export const DashboardPage: React.FC = () => {
               savedResources={savedResourcesList} 
             />
           )}
-
           {activeRole === 'small_business' && (
             <BusinessDashboardView />
           )}
-
           {activeRole === 'partner' && (
             <PartnerDashboardView />
           )}
-
           {activeRole === 'admin' && (
             <AdminDashboardView />
           )}
@@ -1038,5 +964,4 @@ export const DashboardPage: React.FC = () => {
     </DashboardLayout>
   );
 };
-
 export default DashboardPage;

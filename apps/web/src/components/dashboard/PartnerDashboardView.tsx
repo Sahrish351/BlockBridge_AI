@@ -13,7 +13,6 @@ import {
   X
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
-
 interface PartnerSubmissionItem {
   id: string;
   name: string;
@@ -22,7 +21,6 @@ interface PartnerSubmissionItem {
   status: 'Pending Review' | 'Approved' | 'Needs Evidence';
   notes?: string;
 }
-
 export const PartnerDashboardView: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [submissions, setSubmissions] = useState<PartnerSubmissionItem[]>([
@@ -59,10 +57,7 @@ export const PartnerDashboardView: React.FC = () => {
       notes: 'Weekly pantry distribution schedules verified.',
     },
   ]);
-
   const [selectedSub, setSelectedSub] = useState<PartnerSubmissionItem | null>(null);
-
-  // New submission form state
   const [formName, setFormName] = useState('');
   const [formCategory, setFormCategory] = useState('Housing');
   const [formUrl, setFormUrl] = useState('');
@@ -70,11 +65,9 @@ export const PartnerDashboardView: React.FC = () => {
   const [formEligibility, setFormEligibility] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formName.trim()) return;
-
     setSubmitting(true);
     let newId = `sub-0${submissions.length + 1}`;
     try {
@@ -92,7 +85,6 @@ export const PartnerDashboardView: React.FC = () => {
     } catch {
       await new Promise((r) => setTimeout(r, 400));
     }
-
     const newSub: PartnerSubmissionItem = {
       id: newId,
       name: formName.trim(),
@@ -101,11 +93,9 @@ export const PartnerDashboardView: React.FC = () => {
       status: 'Pending Review',
       notes: 'Awaiting source provenance verification.',
     };
-
     setSubmissions([newSub, ...submissions]);
     setSubmitting(false);
     setSubmitSuccess(true);
-
     setTimeout(() => {
       setSubmitSuccess(false);
       setModalOpen(false);
@@ -115,15 +105,13 @@ export const PartnerDashboardView: React.FC = () => {
       setFormEligibility('');
     }, 1200);
   };
-
   const pendingCount = submissions.filter(s => s.status === 'Pending Review').length;
   const approvedCount = submissions.filter(s => s.status === 'Approved').length;
   const needsEvidenceCount = submissions.filter(s => s.status === 'Needs Evidence').length;
-  const totalCount = submissions.length + 8; // Including historical records
-
+  const totalCount = submissions.length + 8; 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Header with CTA Button */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
@@ -133,7 +121,6 @@ export const PartnerDashboardView: React.FC = () => {
             Submit and manage community resources. Track your submissions and feedback.
           </p>
         </div>
-
         <button
           onClick={() => setModalOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors shadow-sm self-start sm:self-auto"
@@ -142,10 +129,9 @@ export const PartnerDashboardView: React.FC = () => {
           <span>Submit a Resource</span>
         </button>
       </div>
-
-      {/* 4 KPI Cards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* Total Submissions */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0">
             <Users className="w-6 h-6" />
@@ -157,8 +143,7 @@ export const PartnerDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Pending Review */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center flex-shrink-0">
             <Clock className="w-6 h-6" />
@@ -170,8 +155,7 @@ export const PartnerDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Approved */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0">
             <CheckCircle2 className="w-6 h-6" />
@@ -183,8 +167,7 @@ export const PartnerDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Needs Evidence */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FDEEE9] text-[#D85A3F] flex items-center justify-center flex-shrink-0">
             <AlertCircle className="w-6 h-6" />
@@ -197,10 +180,9 @@ export const PartnerDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Main Content: Recent Submissions Table (Left) & Helpful Resources + Community Card (Right) */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Recent Submissions Table */}
+        {}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -210,7 +192,6 @@ export const PartnerDashboardView: React.FC = () => {
               View All
             </span>
           </div>
-
           <div className="bg-white rounded-3xl border border-[#E8E4DA] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -261,15 +242,13 @@ export const PartnerDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Right: Helpful Resources & Stronger Together Card */}
+        {}
         <div className="lg:col-span-4 space-y-6">
-          {/* Helpful Resources Card */}
+          {}
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-4">
             <h3 className="font-serif text-lg font-bold text-[#202720]">
               Helpful Resources
             </h3>
-
             <div className="space-y-3">
               <Link 
                 to="/community-partners" 
@@ -287,7 +266,6 @@ export const PartnerDashboardView: React.FC = () => {
                   </p>
                 </div>
               </Link>
-
               <Link 
                 to="/resource-standards" 
                 className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
@@ -304,7 +282,6 @@ export const PartnerDashboardView: React.FC = () => {
                   </p>
                 </div>
               </Link>
-
               <div className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group cursor-pointer">
                 <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] text-[#246B52] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <HelpCircle className="w-4 h-4" />
@@ -320,8 +297,7 @@ export const PartnerDashboardView: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Stronger Together Card matching reference */}
+          {}
           <div className="relative rounded-3xl overflow-hidden shadow-sm h-52 group">
             <img
               src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80"
@@ -345,8 +321,7 @@ export const PartnerDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Submission Details Modal */}
+      {}
       {selectedSub && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
@@ -361,7 +336,6 @@ export const PartnerDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <div className="space-y-3 text-xs">
               <div className="flex justify-between py-2 border-b border-[#E8E4DA]">
                 <span className="text-black/50">Category:</span>
@@ -382,7 +356,6 @@ export const PartnerDashboardView: React.FC = () => {
                 </p>
               </div>
             </div>
-
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setSelectedSub(null)}
@@ -394,8 +367,7 @@ export const PartnerDashboardView: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Submit a Resource Modal */}
+      {}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-6 border border-[#E8E4DA] shadow-xl my-8">
@@ -415,7 +387,6 @@ export const PartnerDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             {submitSuccess ? (
               <div className="p-8 text-center space-y-3">
                 <div className="w-12 h-12 rounded-full bg-[#EBF3ED] text-[#246B52] flex items-center justify-center mx-auto">
@@ -443,7 +414,6 @@ export const PartnerDashboardView: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DA] focus:ring-2 focus:ring-[#246B52] focus:outline-none"
                   />
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-bold text-[#202720] mb-1">
@@ -462,7 +432,6 @@ export const PartnerDashboardView: React.FC = () => {
                       <option value="Workforce">Workforce Training</option>
                     </select>
                   </div>
-
                   <div>
                     <label className="block font-bold text-[#202720] mb-1">
                       Official Source URL *
@@ -477,7 +446,6 @@ export const PartnerDashboardView: React.FC = () => {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label className="block font-bold text-[#202720] mb-1">
                     Program Summary *
@@ -491,7 +459,6 @@ export const PartnerDashboardView: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DA] focus:ring-2 focus:ring-[#246B52] focus:outline-none"
                   />
                 </div>
-
                 <div>
                   <label className="block font-bold text-[#202720] mb-1">
                     Key Eligibility Requirements
@@ -504,7 +471,6 @@ export const PartnerDashboardView: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DA] focus:ring-2 focus:ring-[#246B52] focus:outline-none"
                   />
                 </div>
-
                 <div className="pt-3 flex items-center justify-end gap-3">
                   <button
                     type="button"

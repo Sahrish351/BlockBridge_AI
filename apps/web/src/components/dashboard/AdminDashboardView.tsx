@@ -13,7 +13,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
-
 interface ReviewQueueItem {
   id: string;
   type: 'Partner Submission' | 'Resource Update';
@@ -24,7 +23,6 @@ interface ReviewQueueItem {
   sourceUrl: string;
   summary: string;
 }
-
 export const AdminDashboardView: React.FC = () => {
   const [queue, setQueue] = useState<ReviewQueueItem[]>([
     {
@@ -68,14 +66,9 @@ export const AdminDashboardView: React.FC = () => {
       summary: 'Revised deduction rules for elderly or disabled household members.',
     },
   ]);
-
   const [activeReviewItem, setActiveReviewItem] = useState<ReviewQueueItem | null>(null);
   const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
-  
-  // Modals for Quick Actions
   const [activeModal, setActiveModal] = useState<'reports' | 'audit' | 'users' | null>(null);
-
-  // Mock Error Reports from Community
   const errorReports = [
     {
       id: 'rep-01',
@@ -94,8 +87,6 @@ export const AdminDashboardView: React.FC = () => {
       status: 'In Review'
     }
   ];
-
-  // Audit Log History
   const auditLogs = [
     {
       id: 'aud-01',
@@ -119,10 +110,8 @@ export const AdminDashboardView: React.FC = () => {
       timestamp: 'Oct 15, 2026 16:40 UTC'
     }
   ];
-
   const handleModerate = async (action: 'Approved' | 'Rejected' | 'Needs Info') => {
     if (!activeReviewItem) return;
-
     if (action === 'Approved' || action === 'Rejected') {
       try {
         await apiService.moderatePartnerSubmission(activeReviewItem.id, action);
@@ -130,24 +119,20 @@ export const AdminDashboardView: React.FC = () => {
         console.warn('API moderation error:', err);
       }
     }
-
     setQueue(prev => prev.map(item => {
       if (item.id !== activeReviewItem.id) return item;
       return { ...item, status: action };
     }));
-
     setActionSuccessMessage(`Item "${activeReviewItem.title}" marked as ${action}.`);
     setTimeout(() => {
       setActionSuccessMessage(null);
       setActiveReviewItem(null);
     }, 1200);
   };
-
   const pendingCount = queue.filter(q => q.status === 'Pending').length;
-
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Header */}
+      {}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
           Admin Dashboard
@@ -156,10 +141,9 @@ export const AdminDashboardView: React.FC = () => {
           Review and verify community resources, partner submissions, and system reports.
         </p>
       </div>
-
-      {/* 4 Status KPI Cards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* Pending Reviews */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center flex-shrink-0">
             <Clock className="w-6 h-6" />
@@ -171,8 +155,7 @@ export const AdminDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Partner Submissions */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#F3E8FF] text-[#9333EA] flex items-center justify-center flex-shrink-0">
             <FileCheck2 className="w-6 h-6" />
@@ -184,8 +167,7 @@ export const AdminDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Error Reports */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FDEEE9] text-[#D85A3F] flex items-center justify-center flex-shrink-0">
             <AlertTriangle className="w-6 h-6" />
@@ -197,8 +179,7 @@ export const AdminDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Stale Resources */}
+        {}
         <div className="bg-white rounded-2xl p-5 border border-[#E8E4DA] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center flex-shrink-0">
             <RefreshCw className="w-6 h-6" />
@@ -211,12 +192,11 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Main Grid: Review Queue + Submission Trends (Left) & Quick Actions + Verification Card (Right) */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column (8 cols): Review Queue Table & Bar Chart */}
+        {}
         <div className="lg:col-span-8 space-y-6">
-          {/* Review Queue Table */}
+          {}
           <div id="review-queue-section" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -226,7 +206,6 @@ export const AdminDashboardView: React.FC = () => {
                 View All
               </Link>
             </div>
-
             <div className="bg-white rounded-3xl border border-[#E8E4DA] shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
@@ -277,8 +256,7 @@ export const AdminDashboardView: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Submission Trends Bar Chart matching reference */}
+          {}
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <h3 className="font-serif text-lg font-bold text-[#202720]">
@@ -295,8 +273,7 @@ export const AdminDashboardView: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Custom SVG Bar Chart */}
+            {}
             <div className="h-44 flex items-end justify-between pt-6 px-4 sm:px-8 border-b border-[#E8E4DA] pb-2">
               {[
                 { month: 'Sep', partner: 35, approved: 30 },
@@ -306,13 +283,13 @@ export const AdminDashboardView: React.FC = () => {
               ].map((bar) => (
                 <div key={bar.month} className="flex flex-col items-center gap-2">
                   <div className="flex items-end gap-2 h-32">
-                    {/* Partner Bar */}
+                    {}
                     <div
                       className="w-4 sm:w-6 rounded-t-md bg-[#143D2F] transition-all hover:opacity-90"
                       style={{ height: `${(bar.partner / 120) * 100}%` }}
                       title={`Partner: ${bar.partner}`}
                     />
-                    {/* Approved Bar */}
+                    {}
                     <div
                       className="w-4 sm:w-6 rounded-t-md bg-[#86EFAC] transition-all hover:opacity-90"
                       style={{ height: `${(bar.approved / 120) * 100}%` }}
@@ -325,15 +302,13 @@ export const AdminDashboardView: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Right Column (4 cols): Quick Actions & Keep our community informed Card */}
+        {}
         <div className="lg:col-span-4 space-y-6">
-          {/* Quick Actions Card */}
+          {}
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm space-y-4">
             <h3 className="font-serif text-lg font-bold text-[#202720]">
               Quick Actions
             </h3>
-
             <div className="space-y-3">
               <button
                 onClick={() => {
@@ -354,7 +329,6 @@ export const AdminDashboardView: React.FC = () => {
                   </p>
                 </div>
               </button>
-
               <button
                 onClick={() => setActiveModal('reports')}
                 className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
@@ -371,7 +345,6 @@ export const AdminDashboardView: React.FC = () => {
                   </p>
                 </div>
               </button>
-
               <button
                 onClick={() => setActiveModal('audit')}
                 className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group"
@@ -388,7 +361,6 @@ export const AdminDashboardView: React.FC = () => {
                   </p>
                 </div>
               </button>
-
               <button
                 onClick={() => setActiveModal('users')}
                 className="w-full text-left flex items-start gap-3 p-2.5 rounded-2xl hover:bg-[#FAF8F3] transition-colors group cursor-pointer"
@@ -407,13 +379,11 @@ export const AdminDashboardView: React.FC = () => {
               </button>
             </div>
           </div>
-
-          {/* Keep our community informed Card matching reference */}
+          {}
           <div className="bg-[#EBF3ED] rounded-3xl p-6 border border-[#C5DEC8] space-y-4">
             <div className="w-9 h-9 rounded-2xl bg-[#246B52] text-white flex items-center justify-center">
               <ShieldCheck className="w-5 h-5" />
             </div>
-
             <div className="space-y-1">
               <h4 className="font-serif text-lg font-bold text-[#143D2F]">
                 Keep our community informed
@@ -422,7 +392,6 @@ export const AdminDashboardView: React.FC = () => {
                 Verify sources, ensure accuracy, and support trusted local resources.
               </p>
             </div>
-
             <Link
               to="/resource-standards"
               className="inline-block px-4 py-2.5 rounded-full bg-[#143D2F] text-white text-xs font-semibold hover:bg-[#1E5743] transition-colors shadow-sm"
@@ -432,8 +401,7 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Review Modal */}
+      {}
       {activeReviewItem && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
@@ -453,7 +421,6 @@ export const AdminDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             {actionSuccessMessage ? (
               <div className="p-6 text-center space-y-2 bg-[#EBF3ED] rounded-2xl border border-[#C5DEC8]">
                 <CheckCircle2 className="w-8 h-8 text-[#246B52] mx-auto" />
@@ -485,14 +452,12 @@ export const AdminDashboardView: React.FC = () => {
                     </a>
                   </div>
                 </div>
-
                 <div>
                   <span className="text-black/50 block mb-1 font-bold">Summary & Evidence:</span>
                   <p className="text-black/70 p-3 bg-white rounded-xl border border-[#E8E4DA]">
                     {activeReviewItem.summary}
                   </p>
                 </div>
-
                 <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
                   <button
                     onClick={() => handleModerate('Needs Info')}
@@ -519,7 +484,7 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       )}
-      {/* Error Reports Modal */}
+      {}
       {activeModal === 'reports' && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
@@ -539,11 +504,9 @@ export const AdminDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <p className="text-xs text-black/60">
               User-submitted reports identifying outdated program guidelines, broken contact numbers, or updated application windows.
             </p>
-
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {errorReports.map((report) => (
                 <div key={report.id} className="p-4 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-2 text-xs">
@@ -561,7 +524,6 @@ export const AdminDashboardView: React.FC = () => {
                 </div>
               ))}
             </div>
-
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setActiveModal(null)}
@@ -573,8 +535,7 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Audit Logs Modal */}
+      {}
       {activeModal === 'audit' && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
@@ -594,11 +555,9 @@ export const AdminDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <p className="text-xs text-black/60">
               Tamper-evident log of resource approvals, guideline modifications, and verification updates.
             </p>
-
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {auditLogs.map((log) => (
                 <div key={log.id} className="p-3.5 rounded-2xl bg-[#FAF8F3] border border-[#E8E4DA] text-xs space-y-1">
@@ -611,7 +570,6 @@ export const AdminDashboardView: React.FC = () => {
                 </div>
               ))}
             </div>
-
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setActiveModal(null)}
@@ -623,8 +581,7 @@ export const AdminDashboardView: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* User Management & Role Permissions Modal */}
+      {}
       {activeModal === 'users' && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 border border-[#E8E4DA] shadow-xl animate-in zoom-in-95 duration-150">
@@ -644,7 +601,6 @@ export const AdminDashboardView: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <div className="space-y-2.5 text-xs">
               {[
                 { role: 'Resident', access: 'Search, Save Resources, AI Plan Builder, Action Checklists', status: 'Active' },
@@ -663,7 +619,6 @@ export const AdminDashboardView: React.FC = () => {
                 </div>
               ))}
             </div>
-
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setActiveModal(null)}

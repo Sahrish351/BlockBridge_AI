@@ -9,16 +9,13 @@ import {
   ShieldCheck, 
   ChevronRight
 } from 'lucide-react';
-
 interface RoadmapStep {
   id: string;
   title: string;
   status: 'Completed' | 'In Progress' | 'Pending';
   deadline?: string;
 }
-
 export const BusinessDashboardView: React.FC = () => {
-  // Interactive roadmap items with toggleable progress
   const [roadmap, setRoadmap] = useState<RoadmapStep[]>([
     {
       id: 'step-1',
@@ -48,7 +45,6 @@ export const BusinessDashboardView: React.FC = () => {
       deadline: 'Nov 15, 2026',
     },
   ]);
-
   const toggleStep = (id: string) => {
     setRoadmap(prev => prev.map(step => {
       if (step.id !== id) return step;
@@ -57,12 +53,10 @@ export const BusinessDashboardView: React.FC = () => {
       return { ...step, status: 'In Progress' };
     }));
   };
-
   const completedCount = roadmap.filter(s => s.status === 'Completed').length;
-
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Header */}
+      {}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202720] tracking-tight">
           Welcome back, Marcus
@@ -71,7 +65,6 @@ export const BusinessDashboardView: React.FC = () => {
           Here's your business support overview and upcoming opportunities.
         </p>
       </div>
-
       {/* Profile Banner Card - Compact, balanced height without empty vertical space */}
       <div className="bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between">
         <div className="p-5 sm:p-6 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -89,7 +82,6 @@ export const BusinessDashboardView: React.FC = () => {
               </div>
             </div>
           </div>
-
           <div>
             <Link
               to="/app/business-profile"
@@ -100,7 +92,6 @@ export const BusinessDashboardView: React.FC = () => {
             </Link>
           </div>
         </div>
-
         {/* Café/Barista Photo - Compact horizontal balance */}
         <div className="w-full md:w-64 h-36 md:h-28 relative overflow-hidden bg-stone-100 flex-shrink-0">
           <img
@@ -110,7 +101,6 @@ export const BusinessDashboardView: React.FC = () => {
           />
         </div>
       </div>
-
       {/* 4 KPI Cards in a Row - Compact, uniform height */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Card 1: Capital Readiness */}
@@ -121,7 +111,6 @@ export const BusinessDashboardView: React.FC = () => {
           </div>
           <span className="text-[10px] text-black/50">Target grant range (Illustrative Demo)</span>
         </div>
-
         {/* Card 2: Prerequisites */}
         <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <span className="text-xs font-medium text-black/60">Prerequisites</span>
@@ -135,7 +124,6 @@ export const BusinessDashboardView: React.FC = () => {
             />
           </div>
         </div>
-
         {/* Card 3: Next Deadline */}
         <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
@@ -149,7 +137,6 @@ export const BusinessDashboardView: React.FC = () => {
             RICE Fall Cohort (Quarterly Rolling)
           </span>
         </div>
-
         {/* Card 4: Find Business Support (Green Card with +) */}
         <Link
           to="/app/find-support?type=business"
@@ -168,7 +155,6 @@ export const BusinessDashboardView: React.FC = () => {
           </p>
         </Link>
       </div>
-
       {/* Lower Section: Your Business Roadmap (Left) & Recommended Opportunities (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Your Business Roadmap */}
@@ -182,12 +168,10 @@ export const BusinessDashboardView: React.FC = () => {
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-
           <div className="bg-white rounded-3xl p-6 border border-[#E8E4DA] shadow-sm divide-y divide-[#E8E4DA]/60">
             {roadmap.map((step) => {
               const isCompleted = step.status === 'Completed';
               const isInProgress = step.status === 'In Progress';
-
               return (
                 <div 
                   key={step.id}
@@ -206,7 +190,6 @@ export const BusinessDashboardView: React.FC = () => {
                     ) : (
                       <div className="w-6 h-6 rounded-full border border-black/30 flex items-center justify-center flex-shrink-0" />
                     )}
-
                     <div>
                       <h4 className={`text-sm font-bold ${isCompleted ? 'text-[#202720]' : 'text-[#202720]'}`}>
                         {step.title}
@@ -218,7 +201,6 @@ export const BusinessDashboardView: React.FC = () => {
                       </span>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-2">
                     {step.deadline && (
                       <span className="text-[11px] text-black/40 hidden sm:inline">
@@ -234,7 +216,6 @@ export const BusinessDashboardView: React.FC = () => {
             })}
           </div>
         </div>
-
         {/* Right Column: Recommended Opportunities */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
@@ -245,7 +226,6 @@ export const BusinessDashboardView: React.FC = () => {
               View All
             </Link>
           </div>
-
           <div className="bg-white rounded-3xl p-5 border border-[#E8E4DA] shadow-sm space-y-3">
             {[
               {
@@ -284,7 +264,6 @@ export const BusinessDashboardView: React.FC = () => {
                     </span>
                   )}
                 </div>
-
                 <ChevronRight className="w-4 h-4 text-black/30 group-hover:text-[#246B52] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
               </Link>
             ))}

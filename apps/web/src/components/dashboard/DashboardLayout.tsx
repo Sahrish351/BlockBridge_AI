@@ -25,13 +25,11 @@ import {
   Users
 } from 'lucide-react';
 import { useAuth, UserRole } from '../../context/AuthContext';
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
   activeRole: UserRole;
   onRoleChange?: (role: UserRole) => void;
 }
-
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ 
   children, 
   activeRole,
@@ -45,22 +43,17 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
   const isRealNonAdmin = user && !user.id?.startsWith('demo-') && role !== 'admin';
-
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/resources?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
-  // Persona metadata matching reference image
   const personas: Record<UserRole, {
     name: string;
     roleLabel: string;
@@ -94,10 +87,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     },
   };
-
   const currentPersona = personas[activeRole] || personas.resident;
-
-  // Sidebar navigation links tailored to each role
   const getNavLinks = () => {
     switch (activeRole) {
       case 'resident':
@@ -146,27 +136,24 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         ];
     }
   };
-
   const navLinks = getNavLinks();
-
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#202720] flex">
-      {/* Mobile Drawer Backdrop */}
+      {}
       {mobileMenuOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-
-      {/* Sidebar: Dark Forest Green */}
+      {}
       <aside 
         className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-[#143D2F] text-white flex flex-col justify-between z-50 transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="flex flex-col flex-1 overflow-y-auto">
-          {/* Logo & Brand Header */}
+          {}
           <div className="p-6 pb-6 border-b border-white/10 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3 group">
               <div className="w-9 h-9 rounded-xl bg-[#246B52] border border-white/20 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -193,7 +180,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </span>
               </div>
             </Link>
-
             <button 
               onClick={() => setMobileMenuOpen(false)}
               className="lg:hidden text-white/70 hover:text-white"
@@ -202,43 +188,31 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <X className="w-5 h-5" />
             </button>
           </div>
-
-          {/* Navigation Items */}
+          {}
           <nav className="p-4 space-y-1.5 flex-1">
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isCurrent = (() => {
                 const currentPath = location.pathname;
                 const currentSearch = location.search;
-
-                // Query-specific matches (e.g. /app/find-support?type=business)
                 if (item.path.includes('?')) {
                   const [itemPath, itemQuery] = item.path.split('?');
                   return currentPath === itemPath && currentSearch.includes(itemQuery);
                 }
-
-                // Root dashboard matches
                 if (item.path === '/app') {
                   return (currentPath === '/app' || currentPath === '/app/') && !new URLSearchParams(currentSearch).get('tab');
                 }
                 if (item.path === '/admin') {
                   return (currentPath === '/admin' || currentPath === '/admin/') && !new URLSearchParams(currentSearch).get('tab');
                 }
-
-                // Exact path match
                 if (currentPath === item.path) return true;
-
-                // Subpath match (e.g. /app/plans/plan-01 matches /app/plans)
                 if (item.path !== '/app' && item.path !== '/admin' && currentPath.startsWith(item.path)) {
                   return true;
                 }
-
-                // Query param fallback (?tab=messages)
                 const lastSegment = item.path.split('/').pop()?.split('?')[0];
                 if (lastSegment && new URLSearchParams(currentSearch).get('tab') === lastSegment) {
                   return true;
                 }
-
                 return false;
               })();
               return (
@@ -266,8 +240,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             })}
           </nav>
         </div>
-
-        {/* Sidebar Footer: Sign Out */}
+        {}
         <div className="p-4 border-t border-white/10">
           <button
             onClick={handleSignOut}
@@ -278,10 +251,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </button>
         </div>
       </aside>
-
-      {/* Main Content Area */}
+      {}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header Bar */}
+        {}
         <header className="sticky top-0 z-30 bg-[#FAF8F3]/95 backdrop-blur-md border-b border-[#E8E4DA] px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-1 max-w-lg">
             <button
@@ -291,8 +263,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             >
               <Menu className="w-5 h-5" />
             </button>
-
-            {/* Search Input matching reference */}
+            {}
             <form onSubmit={handleSearchSubmit} className="relative w-full">
               <Search className="w-4 h-4 text-black/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -304,10 +275,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               />
             </form>
           </div>
-
-          {/* Right Header Controls: Persona Switcher, Bell, Profile Chip */}
+          {}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Quick Persona Switcher for Evaluation */}
+            {}
             <div className="relative">
               <button
                 onClick={() => {
@@ -323,7 +293,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 <span className="font-bold text-[#143D2F]">{currentPersona.roleLabel}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-black/40 ml-1" />
               </button>
-
               {roleDropdownOpen && (
                 <>
                   <div 
@@ -339,7 +308,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         Test Mode
                       </span>
                     </div>
-
                     {[
                       { role: 'resident' as UserRole, label: 'Resident', desc: 'Keisha Jenkins' },
                       { role: 'small_business' as UserRole, label: 'Small Business', desc: 'Marcus Vance' },
@@ -380,8 +348,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </>
               )}
             </div>
-
-            {/* Notification Bell */}
+            {}
             <div className="relative">
               <button 
                 onClick={() => {
@@ -395,7 +362,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 <Bell className="w-4 h-4 text-black/60" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E98770]" />
               </button>
-
               {notificationsOpen && (
                 <>
                   <div 
@@ -409,7 +375,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         Dismiss all
                       </span>
                     </div>
-
                     <div className="space-y-2.5">
                       <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                         <div className="flex items-center justify-between">
@@ -420,7 +385,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                           Georgia Gateway priority enrollment window opens Nov 1 for Fulton County residents.
                         </p>
                       </div>
-
                       <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-[#202720]">Opportunity Fund</span>
@@ -430,7 +394,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                           Invest Atlanta small business microloan advisory session scheduled for Thursday.
                         </p>
                       </div>
-
                       <div className="p-2.5 rounded-xl bg-[#FAF8F3] border border-[#E8E4DA] space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-[#202720]">Directory Verification</span>
@@ -445,8 +408,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </>
               )}
             </div>
-
-            {/* Profile Chip with Interactive Dropdown */}
+            {}
             <div className="relative">
               <button
                 onClick={() => {
@@ -471,7 +433,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-black/40 hidden md:block" />
               </button>
-
               {profileMenuOpen && (
                 <>
                   <div 
@@ -486,7 +447,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         {currentPersona.roleLabel} Account
                       </span>
                     </div>
-
                     <div className="py-1">
                       <Link
                         to="/app/plans"
@@ -496,7 +456,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         <FileText className="w-4 h-4" />
                         <span>Action Plans</span>
                       </Link>
-
                       <Link
                         to="/resources?saved=true"
                         onClick={() => setProfileMenuOpen(false)}
@@ -505,7 +464,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         <Bookmark className="w-4 h-4" />
                         <span>Saved Resources</span>
                       </Link>
-
                       <Link
                         to="/resource-standards"
                         onClick={() => setProfileMenuOpen(false)}
@@ -515,7 +473,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         <span>Verification Standards</span>
                       </Link>
                     </div>
-
                     <div className="border-t border-[#E8E4DA] pt-1">
                       <button
                         onClick={handleSignOut}
@@ -531,8 +488,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           </div>
         </header>
-
-        {/* Page Content */}
+        {}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1400px] w-full mx-auto">
           {children}
         </main>
@@ -540,4 +496,3 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     </div>
   );
 };
-
