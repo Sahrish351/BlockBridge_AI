@@ -168,42 +168,50 @@ ALTER TABLE public.partner_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.resource_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Profiles Policies
+-- 8.1 Profiles Policies
+DROP POLICY IF EXISTS "Users can view own profile or admins view all" ON public.profiles;
 CREATE POLICY "Users can view own profile or admins view all"
     ON public.profiles FOR SELECT
     USING (auth.uid() = id OR (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
+DROP POLICY IF EXISTS "Users can update own display_name and metadata but not role" ON public.profiles;
 CREATE POLICY "Users can update own display_name and metadata but not role"
     ON public.profiles FOR UPDATE
     USING (auth.uid() = id)
     WITH CHECK (auth.uid() = id AND role = (SELECT role FROM public.profiles WHERE id = auth.uid()));
 
+DROP POLICY IF EXISTS "Admins can update any profile" ON public.profiles;
 CREATE POLICY "Admins can update any profile"
     ON public.profiles FOR UPDATE
     USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
--- Resources Policies
+-- 8.2 Resources Policies
+DROP POLICY IF EXISTS "Public can view verified and re-verification resources" ON public.resources;
 CREATE POLICY "Public can view verified and re-verification resources"
     ON public.resources FOR SELECT
     USING (verification_status IN ('Verified', 'Needs Re-verification'));
 
+DROP POLICY IF EXISTS "Admins have full access to resources" ON public.resources;
 CREATE POLICY "Admins have full access to resources"
     ON public.resources FOR ALL
     USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
--- Saved Resources Policies
+-- 8.3 Saved Resources Policies
+DROP POLICY IF EXISTS "Users manage their own saved resources" ON public.saved_resources;
 CREATE POLICY "Users manage their own saved resources"
     ON public.saved_resources FOR ALL
     USING (auth.uid() = user_id)
     WITH CHECK (auth.uid() = user_id);
 
--- Action Plans Policies
+-- 8.4 Action Plans Policies
+DROP POLICY IF EXISTS "Users manage their own action plans" ON public.action_plans;
 CREATE POLICY "Users manage their own action plans"
     ON public.action_plans FOR ALL
     USING (auth.uid() = user_id OR user_id IS NULL)
     WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
--- Plan Steps Policies
+-- 8.5 Plan Steps Policies
+DROP POLICY IF EXISTS "Users manage steps for their plans" ON public.plan_steps;
 CREATE POLICY "Users manage steps for their plans"
     ON public.plan_steps FOR ALL
     USING (
@@ -214,32 +222,66 @@ CREATE POLICY "Users manage steps for their plans"
         )
     );
 
--- Partner Submissions Policies
+-- 8.6 Partner Submissions Policies
+DROP POLICY IF EXISTS "Partners view their own submissions" ON public.partner_submissions;
 CREATE POLICY "Partners view their own submissions"
     ON public.partner_submissions FOR SELECT
     USING (auth.uid() = submitted_by OR (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
+DROP POLICY IF EXISTS "Partners insert their own submissions" ON public.partner_submissions;
 CREATE POLICY "Partners insert their own submissions"
     ON public.partner_submissions FOR INSERT
     WITH CHECK (auth.uid() = submitted_by OR (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'partner');
 
+DROP POLICY IF EXISTS "Only admins moderate partner submissions" ON public.partner_submissions;
 CREATE POLICY "Only admins moderate partner submissions"
     ON public.partner_submissions FOR UPDATE
     USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
--- Resource Reports Policies
+-- 8.7 Resource Reports Policies
+DROP POLICY IF EXISTS "Anyone authenticated or anonymous can submit reports" ON public.resource_reports;
 CREATE POLICY "Anyone authenticated or anonymous can submit reports"
     ON public.resource_reports FOR INSERT
     WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Admins review and triage resource reports" ON public.resource_reports;
 CREATE POLICY "Admins review and triage resource reports"
     ON public.resource_reports FOR ALL
     USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
--- Audit Logs Policies
+-- 8.8 Audit Logs Policies
+DROP POLICY IF EXISTS "Admins view audit logs" ON public.audit_logs;
 CREATE POLICY "Admins view audit logs"
     ON public.audit_logs FOR SELECT
     USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
+
+-- 8.9 Auto-create profile trigger on Auth Signup with Role Elevation Guard
+-- Prevents clients from granting themselves admin privileges via signup metadata
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO public.profiles (id, email, display_name, role)
+    VALUES (
+        new.id,
+        new.email,
+        COALESCE(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1)),
+        -- Security Guard: Disallow client-side 'admin' assignment; force to 'resident' or valid non-admin role
+        CASE 
+            WHEN new.raw_user_meta_data->>'role' IN ('small_business', 'partner') THEN new.raw_user_meta_data->>'role'
+            ELSE 'resident'
+        END
+    )
+    ON CONFLICT (id) DO UPDATE SET
+        email = EXCLUDED.email,
+        updated_at = timezone('utc'::text, now());
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ====================================================================
 -- 9. SEED 12 SOURCE-VERIFIED ATLANTA COMMUNITY RESOURCES
