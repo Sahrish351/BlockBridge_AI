@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build --workspace=blockbridge-web",
+  "outputDirectory": "apps/web/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

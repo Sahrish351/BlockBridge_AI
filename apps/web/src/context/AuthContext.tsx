@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             display_name: metaName,
             role: metaRole,
           });
-        } else if (!storedDemo) {
+        } else if (!storedDemo && import.meta.env.VITE_DEMO_MODE === 'true' && !sessionStorage.getItem('bb_explicit_signout')) {
           const defaultDemo = DEMO_PERSONAS.resident;
           try {
             const { data } = await supabase.auth.signInWithPassword({
@@ -132,6 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
+    sessionStorage.removeItem('bb_explicit_signout');
     setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -217,6 +218,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
     } finally {
       localStorage.removeItem('bb_demo_profile');
+      sessionStorage.setItem('bb_explicit_signout', 'true');
       setUser(null);
       setProfile(null);
       setIsLoading(false);
@@ -236,6 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInDemoRole = async (role: UserRole) => {
+    sessionStorage.removeItem('bb_explicit_signout');
     setIsLoading(true);
     const demoProf = DEMO_PERSONAS[role];
     try {

@@ -1,7 +1,13 @@
+import os
+import json
+import urllib.request
+import datetime
+from typing import List, Optional, Dict, Any
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, status, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Dict, Any
-import datetime
+
+load_dotenv()
 
 from models import (
     ResourceSchema, 
@@ -15,21 +21,34 @@ from models import (
 from matching import load_resources, match_resources, ai_match_resources
 import database as db
 
-
 db.init_db()
 
 def require_admin_role(
     x_user_role: Optional[str] = Header(None),
     authorization: Optional[str] = Header(None)
 ):
-    """
-    Enforce administrator role permissions on sensitive moderation queue actions.
-    Prevents unauthorized or regular resident accounts from accessing moderation data.
-    """
     if x_user_role == "admin":
         return True
     if authorization and ("admin" in authorization.lower() or "service_role" in authorization.lower()):
         return True
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ", 1)[1].strip()
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_anon = os.getenv("SUPABASE_ANON_KEY")
+        if supabase_url and supabase_anon and token:
+            try:
+                req = urllib.request.Request(
+                    f"{supabase_url}/auth/v1/user",
+                    headers={"apikey": supabase_anon, "Authorization": f"Bearer {token}"}
+                )
+                with urllib.request.urlopen(req, timeout=3) as resp:
+                    if resp.status == 200:
+                        user_data = json.loads(resp.read().decode("utf-8"))
+                        role = user_data.get("user_metadata", {}).get("role") or user_data.get("app_metadata", {}).get("role")
+                        if role == "admin":
+                            return True
+            except Exception:
+                pass
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Administrator role authorization required for moderation queue access."
@@ -41,10 +60,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
+allowed_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,10 +78,9 @@ def health_check():
         "status": "healthy",
         "service": "BlockBridge AI Engine",
         "ai_model": "gemini-2.5-flash",
-        "database": "SQLite persistent storage",
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z"
+        "database": "Supabase PostgreSQL (production) / SQLite (local fallback)",
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
     }
-
 
 @app.get("/api/resources", response_model=List[ResourceSchema])
 def get_resources(
@@ -97,28 +118,20 @@ def get_resource_by_id(id: str):
             return ResourceSchema(**r)
     raise HTTPException(status_code=404, detail="Resource not found")
 
-
 @app.post("/api/recommendations/ai", response_model=List[ResourceMatchSchema])
 def get_ai_recommendations(intake: IntakeRequestSchema):
-    """
-    AI-powered recommendations using Gemini 2.5 Flash grounded in verified records.
-    """
     matches = ai_match_resources(intake)
     return matches
 
 @app.post("/api/recommendations", response_model=List[ResourceMatchSchema])
 def get_recommendations(intake: IntakeRequestSchema):
-    """
-    Deterministic matching endpoint.
-    """
     matches = match_resources(intake)
     return matches
 
-
 @app.post("/api/action-plans", response_model=ActionPlanSchema)
 def create_action_plan(plan_in: Dict[str, Any]):
-    new_id = f"plan-{int(datetime.datetime.utcnow().timestamp())}"
-    now_str = datetime.datetime.utcnow().isoformat() + "Z"
+    new_id = f"plan-{int(datetime.datetime.now(datetime.timezone.utc).timestamp())}"
+    now_str = datetime.datetime.now(datetime.timezone.utc).isoformat()
     plan_record = {
         "id": new_id,
         "user_id": plan_in.get("user_id", "demo-user"),
@@ -152,11 +165,10 @@ def update_action_plan(id: str, plan_in: Dict[str, Any]):
     existing["title"] = plan_in.get("title", existing["title"])
     existing["goal"] = plan_in.get("goal", existing["goal"])
     existing["tasks"] = plan_in.get("tasks", existing["tasks"])
-    existing["updated_at"] = datetime.datetime.utcnow().isoformat() + "Z"
+    existing["updated_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     saved = db.save_action_plan(existing)
     return ActionPlanSchema(**saved)
-
 
 @app.get("/api/saved-resources")
 def get_user_saved_resources(user_id: str = Query("demo-user")):
@@ -170,7 +182,6 @@ def toggle_user_saved_resource(payload: Dict[str, str]):
         raise HTTPException(status_code=400, detail="resource_id is required")
     is_saved = db.toggle_save_resource(user_id, resource_id)
     return {"resource_id": resource_id, "is_saved": is_saved}
-
 
 @app.post("/api/resource-reports", status_code=status.HTTP_201_CREATED)
 def submit_resource_report(report: ResourceReportSchema):

@@ -36,10 +36,10 @@ BlockBridge AI uses a modular monorepo architecture:
   - **Photography:** High-quality, verified community and small-business photography from Unsplash
   - **Auth & Route Guards:** Supabase Auth client (`@supabase/supabase-js`) + `<ProtectedRoute>` with role-based access control
 - **Backend (`apps/api`):**
-  - **Framework:** FastAPI (Python 3.13) with Pydantic runtime schemas
-  - **AI Pipeline:** Google Generative AI REST integration with strict catalogue grounding and automatic fallback
-  - **Database & Persistence:** SQLite persistent database (`apps/api/blockbridge.db`) for action plans, saved items, reports, and partner submissions
-  - **Security:** Role enforcement dependency (`require_admin_role`) protecting moderation routes
+  - **Framework:** FastAPI (Python 3.11-3.13) with Pydantic runtime schemas
+  - **AI Pipeline:** Google Generative AI REST integration (Gemini 2.5 Flash) with strict Atlanta catalogue grounding and automatic fallback
+  - **Database & Persistence:** **Supabase PostgreSQL** with active Row-Level Security (RLS) across 8 public tables for user action plans, checklist tasks, saved resources, community error reports, and partner submissions. SQLite (`apps/api/blockbridge.db`) provides an offline deterministic test double for CI/CD test suites (`pytest`).
+  - **Security:** Strict CORS origin whitelisting + Vercel deployment regex, role enforcement dependency (`require_admin_role`), and PostgreSQL RLS tenant isolation.
   - **Testing:** Automated `pytest` test suite with 100% passing tests
 - **Verified Data Engine (`sample-data/`):**
   - 12 authentic, human-verified public programs from the Atlanta/Georgia region (Invest Atlanta, Russell Center, LIHEAP, ACFB, ACE CDFI, Urban League, SCORE, etc.)
@@ -97,6 +97,36 @@ cd apps/api
 python main.py
 ```
 API runs on `http://127.0.0.1:8000` with interactive Swagger docs at `http://127.0.0.1:8000/docs`.
+
+---
+
+## 🌐 Production Deployment Guide
+
+### 1. Frontend Deployment (Vercel)
+- **Framework Preset**: Vite
+- **Root Directory**: `apps/web` (or `./` if deploying from monorepo root)
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist` (or `apps/web/dist` if root is `./`)
+- **SPA Rewrites**: Handled automatically via `vercel.json`
+- **Environment Variables**:
+  - `VITE_API_URL`: Your Render backend API URL (e.g. `https://blockbridge-api.onrender.com/api`)
+  - `VITE_SUPABASE_URL`: `https://maooldqymmxvoeubnrdc.supabase.co`
+  - `VITE_SUPABASE_ANON_KEY`: Your Supabase anon key
+  - `VITE_APP_NAME`: `BlockBridge AI`
+  - `VITE_DEMO_MODE`: `true` (enables 1-click test personas for hackathon judges)
+
+### 2. Backend Deployment (Render)
+- **Environment**: Python
+- **Root Directory**: `apps/api` (or deploy via root `render.yaml` Blueprint)
+- **Build Command**: `pip install -r requirements.txt` (or `pip install -r apps/api/requirements.txt` from root)
+- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT` (or `cd apps/api && uvicorn main:app --host 0.0.0.0 --port $PORT` from root)
+- **Health Check Path**: `/api/health`
+- **Environment Variables**:
+  - `PYTHON_VERSION`: `3.11.9`
+  - `CORS_ORIGINS`: Comma-separated allowed frontend domains (e.g. `https://blockbridge-ai.vercel.app,http://localhost:5173`)
+  - `GEMINI_API_KEY`: Your Google Gemini API Key
+  - `SUPABASE_URL`: `https://maooldqymmxvoeubnrdc.supabase.co`
+  - `SUPABASE_ANON_KEY`: Your Supabase anon key
 
 ---
 

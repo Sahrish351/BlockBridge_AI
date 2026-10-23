@@ -11,7 +11,8 @@ import {
 import { supabase } from './supabaseClient';
 import { VERIFIED_RESOURCES } from '../data/mockData';
 
-const API_BASE = 'http://127.0.0.1:8000';
+const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const API_BASE = RAW_API_URL.replace(/\/api\/?$/, '').replace(/\/+$/, '');
 
 const DEFAULT_DEMO_UID = 'c79e1926-a3a6-41ec-88ef-bd06272ca7ac';
 
@@ -156,9 +157,15 @@ export const apiService = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
       const resp = await fetch(`${API_BASE}/api/recommendations/ai`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(intake),
         signal: controller.signal,
       });
