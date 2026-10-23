@@ -3,164 +3,164 @@ import {
   ResourceMatch, 
   IntakeRequest, 
   ActionPlan, 
-  PlanStep,
-  PlanStepStatus,
-  ResourceReportSubmission,
-  PartnerResourceSubmission
+  PlanStep, 
+  PlanStepStatus, 
+  ResourceReportSubmission, 
+  PartnerResourceSubmission 
 } from '../types';
-import { VERIFIED_RESOURCES, INITIAL_ACTION_PLANS } from '../data/mockData';
+import { supabase } from './supabaseClient';
+import { VERIFIED_RESOURCES } from '../data/mockData';
 
 const API_BASE = 'http://127.0.0.1:8000';
 
-// Local storage helper for durable demo persistence
-function loadSavedIds(): string[] {
-  try {
-    const raw = localStorage.getItem('blockbridge_saved_resources');
-    return raw ? JSON.parse(raw) : ['res-001', 'res-002'];
-  } catch {
-    return ['res-001', 'res-002'];
+const DEFAULT_DEMO_UID = 'c79e1926-a3a6-41ec-88ef-bd06272ca7ac';
+
+async function getEffectiveUserId(explicitUserId?: string): Promise<string> {
+  if (explicitUserId && !explicitUserId.startsWith('demo-')) {
+    return explicitUserId;
   }
-}
-
-function persistSavedIds(ids: string[]) {
-  try {
-    localStorage.setItem('blockbridge_saved_resources', JSON.stringify(ids));
-  } catch {}
-}
-
-function loadActionPlans(): ActionPlan[] {
-  try {
-    const raw = localStorage.getItem('blockbridge_action_plans');
-    return raw ? JSON.parse(raw) : [...INITIAL_ACTION_PLANS];
-  } catch {
-    return [...INITIAL_ACTION_PLANS];
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user?.id) {
+    return session.user.id;
   }
-}
-
-function persistActionPlans(plans: ActionPlan[]) {
-  try {
-    localStorage.setItem('blockbridge_action_plans', JSON.stringify(plans));
-  } catch {}
-}
-
-// In-memory / session state initialized with persistent values
-let currentResources: Resource[] = [...VERIFIED_RESOURCES];
-let currentPlans: ActionPlan[] = loadActionPlans();
-let savedResourceIds: string[] = loadSavedIds();
-
-let submittedReports: ResourceReportSubmission[] = [
-  {
-    resource_id: 'res-012',
-    resource_name: 'Atlanta Housing Choice Voucher Homeownership Program',
-    report_type: 'outdated_deadline',
-    description: 'Income guidelines for the 2026 fiscal year were updated by Atlanta Housing last month.',
-    reporter_email: 'community_advocate@gatech.edu'
+  const stored = localStorage.getItem('bb_demo_profile');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed.id && !parsed.id.startsWith('demo-')) {
+        return parsed.id;
+      }
+    } catch {}
   }
-];
-
-let partnerSubmissions: (PartnerResourceSubmission & { id: string; status: 'Pending' | 'Approved' | 'Rejected'; submitted_at: string })[] = [
-  {
-    id: 'sub-01',
-    provider_name: 'Westside Future Fund',
-    resource_name: 'Homeowner Retention Anti-Displacement Tax Fund',
-    summary: 'Qualifying legacy Westside homeowners receive grant support covering increases in property taxes.',
-    category: 'Housing & Rental Support',
-    official_url: 'https://www.westsidefuturefund.org',
-    contact_email: 'info@westsidefuturefund.org',
-    eligibility_summary: 'Must own and reside in qualifying Westside Atlanta neighborhood (English Avenue, Vine City, Ashview Heights).',
-    coverage_area: 'Atlanta (Westside)',
-    status: 'Pending',
-    submitted_at: '2026-10-14'
-  }
-];
+  return DEFAULT_DEMO_UID;
+}
 
 export const apiService = {
-  // --- Resources ---
   async getResources(params?: {
     category?: string;
     search?: string;
     coverage?: string;
     status?: string;
   }): Promise<Resource[]> {
-    await new Promise((r) => setTimeout(r, 120));
-    let list = [...currentResources];
+    try {
+      let query = supabase.from('resources').select('*');
 
-    if (params?.category && params.category !== 'All') {
-      list = list.filter((r) => r.category === params.category);
-    }
-    if (params?.coverage && params.coverage !== 'All') {
-      list = list.filter((r) => r.coverage_type === params.coverage);
-    }
-    if (params?.status && params.status !== 'All') {
-      list = list.filter((r) => r.verification_status === params.status);
-    }
-    if (params?.search && params.search.trim()) {
-      const q = params.search.toLowerCase().trim();
-      list = list.filter(
-        (r) =>
-          r.name.toLowerCase().includes(q) ||
-          r.provider_name.toLowerCase().includes(q) ||
-          r.summary.toLowerCase().includes(q) ||
-          r.description.toLowerCase().includes(q) ||
-          r.tags.some((t) => t.toLowerCase().includes(q))
-      );
-    }
+      if (params?.category && params.category !== 'All') {
+        query = query.eq('category', params.category);
+      }
+      if (params?.coverage && params.coverage !== 'All') {
+        query = query.eq('coverage_type', params.coverage);
+      }
+      if (params?.status && params.status !== 'All') {
+        query = query.eq('verification_status', params.status);
+      }
 
-    return list;
+      const { data, error } = await query;
+      if (error) throw error;
+      if (data && data.length > 0) {
+        let list: Resource[] = data as Resource[];
+        if (params?.search && params.search.trim()) {
+          const q = params.search.toLowerCase().trim();
+          list = list.filter(
+            (r) =>
+              r.name.toLowerCase().includes(q) ||
+              r.provider_name.toLowerCase().includes(q) ||
+              r.summary.toLowerCase().includes(q) ||
+              (r.tags && r.tags.some((t: string) => t.toLowerCase().includes(q)))
+          );
+        }
+        return list;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch resources from Supabase:', err);
+    }
+    return [...VERIFIED_RESOURCES];
   },
 
   async getResourceById(id: string): Promise<Resource | null> {
-    await new Promise((r) => setTimeout(r, 80));
-    return currentResources.find((r) => r.id === id) || null;
+    try {
+      const { data, error } = await supabase
+        .from('resources')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (!error && data) {
+        return data as Resource;
+      }
+    } catch (err) {
+      console.warn('Resource fetch error from Supabase:', err);
+    }
+    return VERIFIED_RESOURCES.find((r) => r.id === id) || null;
   },
 
-  // --- Saved Resources ---
-  async getSavedResourceIds(): Promise<string[]> {
-    return [...savedResourceIds];
+  async getSavedResourceIds(userId?: string): Promise<string[]> {
+    const uid = await getEffectiveUserId(userId);
+    try {
+      const { data, error } = await supabase
+        .from('saved_resources')
+        .select('resource_id')
+        .eq('user_id', uid);
+      if (!error && data) {
+        return data.map((row: any) => row.resource_id);
+      }
+    } catch (err) {
+      console.warn('Failed to load saved resources from Supabase:', err);
+    }
+    return [];
   },
 
-  async toggleSaveResource(resourceId: string): Promise<boolean> {
-    if (savedResourceIds.includes(resourceId)) {
-      savedResourceIds = savedResourceIds.filter((id) => id !== resourceId);
-      persistSavedIds(savedResourceIds);
-      return false; // now unsaved
-    } else {
-      savedResourceIds.push(resourceId);
-      persistSavedIds(savedResourceIds);
-      return true; // now saved
+  async toggleSaveResource(resourceId: string, userId?: string): Promise<boolean> {
+    const uid = await getEffectiveUserId(userId);
+    try {
+      const { data: existing } = await supabase
+        .from('saved_resources')
+        .select('id')
+        .match({ user_id: uid, resource_id: resourceId });
+
+      if (existing && existing.length > 0) {
+        const { error } = await supabase
+          .from('saved_resources')
+          .delete()
+          .match({ user_id: uid, resource_id: resourceId });
+        if (error) throw error;
+        return false;
+      } else {
+        const { error } = await supabase
+          .from('saved_resources')
+          .insert({ user_id: uid, resource_id: resourceId });
+        if (error) throw error;
+        return true;
+      }
+    } catch (err) {
+      console.error('Failed to toggle saved resource on Supabase:', err);
+      throw err;
     }
   },
 
-  // --- AI Orchestration & Recommendation Pipeline ---
   async orchestrateRecommendations(
     intake: IntakeRequest,
     onProgress?: (stage: string, progress: number) => void
   ): Promise<ResourceMatch[]> {
-    // Stage 1: Understanding your need
     onProgress?.('Understanding your need: extracting location, entity type & core assistance category...', 25);
-    await new Promise((r) => setTimeout(r, 450));
+    await new Promise((r) => setTimeout(r, 350));
 
-    // Stage 2: Searching verified catalogue
     onProgress?.('Searching verified catalogue: filtering official sources and active providers...', 55);
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 400));
 
-    // Stage 3: Checking eligibility criteria & unknowns
     onProgress?.('Checking eligibility: separating verified facts from items needing provider confirmation...', 80);
-    await new Promise((r) => setTimeout(r, 450));
+    await new Promise((r) => setTimeout(r, 350));
 
-    // Stage 4: Building next steps
     onProgress?.('Building personalized next-step action checklists with Gemini AI...', 95);
-    
-    // Attempt backend AI endpoint with timeout
+
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4500);
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
 
       const resp = await fetch(`${API_BASE}/api/recommendations/ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(intake),
-        signal: controller.signal
+        signal: controller.signal,
       });
       clearTimeout(timeoutId);
 
@@ -168,22 +168,18 @@ export const apiService = {
         const aiMatches: ResourceMatch[] = await resp.json();
         if (Array.isArray(aiMatches) && aiMatches.length > 0) {
           onProgress?.('Finalizing verified matches and action roadmaps...', 100);
-          await new Promise((r) => setTimeout(r, 200));
           return aiMatches;
         }
       }
-    } catch {
-      // Backend not running or timeout; seamlessly use grounded deterministic matcher
-    }
+    } catch {}
 
     onProgress?.('Finalizing verified matches and action roadmaps...', 100);
-    await new Promise((r) => setTimeout(r, 200));
 
-    // Grounded catalogue matching fallback
+    const liveResources = await this.getResources();
     const query = intake.description.toLowerCase();
     const isSmallBusiness = intake.user_type === 'small_business' || query.includes('business') || query.includes('store') || query.includes('startup');
-    
-    let matched = currentResources.filter((r) => {
+
+    let matched = liveResources.filter((r) => {
       if (isSmallBusiness) {
         return r.category === 'Small Business Support' || r.category === 'Employment & Workforce Training';
       } else {
@@ -195,28 +191,28 @@ export const apiService = {
     });
 
     if (matched.length === 0) {
-      matched = currentResources.slice(0, 4);
+      matched = liveResources.slice(0, 4);
     }
 
     return matched.map((resource) => {
       const whyFit: string[] = [];
       const whatWeKnow: string[] = [];
       const whatToConfirm: string[] = [];
-      const docs: string[] = resource.required_documents.slice(0, 3);
+      const docs: string[] = (resource.required_documents || []).slice(0, 3);
 
       if (isSmallBusiness) {
-        whyFit.push(`Provides structured assistance for businesses in ${resource.city || 'your area'}.`);
+        whyFit.push(`Provides structured assistance for businesses in ${resource.city || 'Atlanta'}.`);
         whyFit.push(`Verified official backing via ${resource.provider_name}.`);
-        whatWeKnow.push(`Official application method: ${resource.application_method}`);
-        whatWeKnow.push(`Deadline status: ${resource.deadline}`);
-        whatToConfirm.push(`Confirm whether your specific revenue band or tenure meets current cohort guidelines.`);
+        whatWeKnow.push(`Official application method: ${resource.application_method || 'Check portal'}`);
+        whatWeKnow.push(`Deadline status: ${resource.deadline || 'Open'}`);
+        whatToConfirm.push(`Confirm whether your revenue band meets current cohort guidelines.`);
         whatToConfirm.push(`Verify active status of business license before submitting application.`);
       } else {
         whyFit.push(`Serves residents needing ${resource.category.toLowerCase()} with direct support.`);
         whyFit.push(`Provider verified at ${resource.official_url}.`);
-        whatWeKnow.push(`Cost to applicant: ${resource.cost_details}`);
-        whatWeKnow.push(`Application method: ${resource.application_method}`);
-        whatToConfirm.push(`Confirm current intake hours and any neighborhood-specific zip code boundaries.`);
+        whatWeKnow.push(`Cost to applicant: ${resource.cost_details || 'Free'}`);
+        whatWeKnow.push(`Application method: ${resource.application_method || 'Online/Walk-in'}`);
+        whatToConfirm.push(`Confirm current intake hours and any neighborhood boundaries.`);
         whatToConfirm.push(`Verify exact household gross income documentation requirements.`);
       }
 
@@ -227,43 +223,73 @@ export const apiService = {
         what_we_know: whatWeKnow,
         what_to_confirm: whatToConfirm,
         before_you_apply_docs: docs,
-        next_step_action: `Review prerequisites and visit official portal at ${resource.provider_name}`
+        next_step_action: `Review prerequisites and visit official portal at ${resource.provider_name}`,
       };
     });
   },
 
-  // --- Action Plans ---
   async getActionPlans(userId?: string): Promise<ActionPlan[]> {
-    await new Promise((r) => setTimeout(r, 90));
-    if (!currentPlans.some((p) => p.id === 'plan-res-01')) {
-      const resPlan = INITIAL_ACTION_PLANS.find((p) => p.id === 'plan-res-01');
-      if (resPlan) currentPlans.unshift(resPlan);
+    const uid = await getEffectiveUserId(userId);
+    try {
+      const { data, error } = await supabase
+        .from('action_plans')
+        .select('*, tasks:plan_steps(*)')
+        .eq('user_id', uid)
+        .order('updated_at', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        return data.map((p: any) => ({
+          id: p.id,
+          user_id: p.user_id,
+          title: p.title,
+          goal: p.goal,
+          created_at: p.created_at,
+          updated_at: p.updated_at,
+          tasks: (p.tasks || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)),
+        }));
+      }
+    } catch (err) {
+      console.warn('Failed to load action plans from Supabase:', err);
     }
-    if (!currentPlans.some((p) => p.id === 'plan-sb-01')) {
-      const sbPlan = INITIAL_ACTION_PLANS.find((p) => p.id === 'plan-sb-01');
-      if (sbPlan) currentPlans.push(sbPlan);
-    }
-    if (userId) {
-      const filtered = currentPlans.filter((p) => p.user_id === userId);
-      return filtered.length > 0 ? filtered : [...currentPlans];
-    }
-    return [...currentPlans];
+    return [];
   },
 
   async getActionPlanById(id: string): Promise<ActionPlan | null> {
-    await new Promise((r) => setTimeout(r, 60));
-    return currentPlans.find((p) => p.id === id) || null;
+    try {
+      const { data, error } = await supabase
+        .from('action_plans')
+        .select('*, tasks:plan_steps(*)')
+        .eq('id', id)
+        .single();
+
+      if (!error && data) {
+        return {
+          id: data.id,
+          user_id: data.user_id,
+          title: data.title,
+          goal: data.goal,
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+          tasks: (data.tasks || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)),
+        };
+      }
+    } catch (err) {
+      console.warn('Failed to fetch action plan from Supabase:', err);
+    }
+    return null;
   },
 
   async createActionPlanFromResources(
     title: string,
     goal: string,
-    resources: Resource[]
+    resources: Resource[],
+    userId?: string
   ): Promise<ActionPlan> {
-    await new Promise((r) => setTimeout(r, 150));
-    const tasks: PlanStep[] = [];
+    const uid = await getEffectiveUserId(userId);
+    const newPlanId = `plan-${Date.now()}`;
+    const nowStr = new Date().toISOString();
 
-    // Step 1: Prep step
+    const tasks: PlanStep[] = [];
     tasks.push({
       id: `task-prep-${Date.now()}`,
       title: 'Review Required Documents & Confirm Eligibility Prerequisites',
@@ -272,10 +298,9 @@ export const apiService = {
       due_date: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
       source_url: resources[0]?.official_url || 'https://www.atlantaga.gov',
       notes: 'Ensure all files are saved as legible PDFs or clear photos.',
-      resource_id: resources[0]?.id
+      resource_id: resources[0]?.id,
     });
 
-    // Step for each selected resource
     resources.forEach((res, idx) => {
       tasks.push({
         id: `task-apply-${res.id}-${idx}`,
@@ -285,203 +310,265 @@ export const apiService = {
         due_date: new Date(Date.now() + 86400000 * (7 + idx * 4)).toISOString().split('T')[0],
         source_url: res.application_url || res.official_url,
         notes: `Contact: ${res.contact_details || 'Check official site'}`,
-        resource_id: res.id
+        resource_id: res.id,
       });
     });
 
-    // Follow-through step
     tasks.push({
       id: `task-followup-${Date.now()}`,
       title: 'Log Confirmation Number & Set Calendar Reminder for Decision Status',
       description: 'Record confirmation receipt and check in with provider if timeline exceeds stated processing period.',
       status: 'Not Started',
       due_date: new Date(Date.now() + 86400000 * 21).toISOString().split('T')[0],
-      notes: ''
+      notes: '',
     });
 
-    const newPlan: ActionPlan = {
-      id: `plan-${Date.now()}`,
+    try {
+      const { error: planErr } = await supabase.from('action_plans').insert({
+        id: newPlanId,
+        user_id: uid,
+        title,
+        goal,
+        created_at: nowStr,
+        updated_at: nowStr,
+      });
+      if (planErr) throw planErr;
+
+      const stepPayloads = tasks.map((t, idx) => ({
+        id: t.id,
+        plan_id: newPlanId,
+        title: t.title,
+        description: t.description || null,
+        status: t.status,
+        due_date: t.due_date || null,
+        source_url: t.source_url || null,
+        notes: t.notes || null,
+        resource_id: t.resource_id || null,
+        order_index: idx + 1,
+      }));
+
+      const { error: stepsErr } = await supabase.from('plan_steps').insert(stepPayloads);
+      if (stepsErr) throw stepsErr;
+    } catch (err) {
+      console.error('Failed to create action plan in Supabase:', err);
+      throw err;
+    }
+
+    return {
+      id: newPlanId,
+      user_id: uid,
       title,
       goal,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      tasks
+      created_at: nowStr,
+      updated_at: nowStr,
+      tasks,
     };
-
-    currentPlans.unshift(newPlan);
-    persistActionPlans(currentPlans);
-
-    // Optional background sync with backend
-    try {
-      fetch(`${API_BASE}/api/action-plans`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPlan)
-      }).catch(() => {});
-    } catch {}
-
-    return newPlan;
   },
 
   async updatePlanStepStatus(
-    planId: string, 
-    stepId: string, 
+    planId: string,
+    stepId: string,
     status: PlanStepStatus,
     notes?: string,
     dueDate?: string
   ): Promise<PlanStep | null> {
-    const plan = currentPlans.find((p) => p.id === planId);
-    if (!plan) return null;
+    try {
+      const patchObj: any = { status };
+      if (notes !== undefined) patchObj.notes = notes;
+      if (dueDate !== undefined) patchObj.due_date = dueDate;
 
-    const task = plan.tasks.find((t) => t.id === stepId);
-    if (!task) return null;
+      const { data, error } = await supabase
+        .from('plan_steps')
+        .update(patchObj)
+        .eq('id', stepId)
+        .select()
+        .single();
 
-    task.status = status;
-    if (notes !== undefined) task.notes = notes;
-    if (dueDate !== undefined) task.due_date = dueDate;
-    plan.updated_at = new Date().toISOString();
+      if (error) throw error;
 
-    persistActionPlans(currentPlans);
-    return { ...task };
+      await supabase
+        .from('action_plans')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', planId);
+
+      return data as PlanStep;
+    } catch (err) {
+      console.error('Failed to update plan step on Supabase:', err);
+      throw err;
+    }
   },
 
   async addPlanStep(planId: string, step: Omit<PlanStep, 'id'>): Promise<PlanStep | null> {
-    const plan = currentPlans.find((p) => p.id === planId);
-    if (!plan) return null;
+    const newStepId = `task-custom-${Date.now()}`;
+    try {
+      const payload = {
+        id: newStepId,
+        plan_id: planId,
+        title: step.title,
+        description: step.description || null,
+        status: step.status || 'Not Started',
+        due_date: step.due_date || null,
+        source_url: step.source_url || null,
+        notes: step.notes || null,
+        resource_id: step.resource_id || null,
+        order_index: 99,
+      };
 
-    const newStep: PlanStep = {
-      ...step,
-      id: `task-custom-${Date.now()}`
-    };
+      const { data, error } = await supabase
+        .from('plan_steps')
+        .insert(payload)
+        .select()
+        .single();
 
-    plan.tasks.push(newStep);
-    plan.updated_at = new Date().toISOString();
-    persistActionPlans(currentPlans);
-    return newStep;
+      if (error) throw error;
+
+      await supabase
+        .from('action_plans')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', planId);
+
+      return data as PlanStep;
+    } catch (err) {
+      console.error('Failed to add plan step to Supabase:', err);
+      throw err;
+    }
   },
 
   async deletePlanStep(planId: string, stepId: string): Promise<boolean> {
-    const plan = currentPlans.find((p) => p.id === planId);
-    if (!plan) return false;
-
-    plan.tasks = plan.tasks.filter((t) => t.id !== stepId);
-    plan.updated_at = new Date().toISOString();
-    persistActionPlans(currentPlans);
-    return true;
-  },
-
-  // --- Reports & Partner Submissions ---
-  async submitResourceReport(report: ResourceReportSubmission): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 200));
-    submittedReports.push(report);
-
     try {
-      fetch(`${API_BASE}/api/resource-reports`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(report)
-      }).catch(() => {});
-    } catch {}
+      const { error } = await supabase
+        .from('plan_steps')
+        .delete()
+        .eq('id', stepId);
 
-    return true;
-  },
+      if (error) throw error;
 
-  async submitPartnerResource(submission: PartnerResourceSubmission): Promise<string> {
-    await new Promise((r) => setTimeout(r, 250));
-    const newId = `sub-${Date.now().toString().slice(-4)}`;
-    partnerSubmissions.push({
-      ...submission,
-      id: newId,
-      status: 'Pending',
-      submitted_at: new Date().toISOString().split('T')[0]
-    });
+      await supabase
+        .from('action_plans')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', planId);
 
-    try {
-      fetch(`${API_BASE}/api/partner/submissions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submission)
-      }).catch(() => {});
-    } catch {}
-
-    return newId;
-  },
-
-  async getAdminQueue() {
-    try {
-      const resp = await fetch(`${API_BASE}/api/admin/review-queue`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Role': 'admin'
-        }
-      });
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data.partner_submissions && data.partner_submissions.length > 0) {
-          partnerSubmissions = data.partner_submissions;
-        }
-        if (data.error_reports && data.error_reports.length > 0) {
-          submittedReports = data.error_reports;
-        }
-      }
-    } catch {
-      // Offline fallback
+      return true;
+    } catch (err) {
+      console.error('Failed to delete plan step from Supabase:', err);
+      throw err;
     }
+  },
 
-    await new Promise((r) => setTimeout(r, 100));
+  async submitResourceReport(report: ResourceReportSubmission): Promise<boolean> {
+    const reportId = `rep-${Date.now()}`;
+    try {
+      const { error } = await supabase.from('resource_reports').insert({
+        id: reportId,
+        resource_id: report.resource_id,
+        resource_name: report.resource_name,
+        report_type: report.report_type,
+        description: report.description,
+        reporter_email: report.reporter_email || null,
+        status: 'Open',
+      });
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      console.error('Failed to submit resource report to Supabase:', err);
+      throw err;
+    }
+  },
+
+  async submitPartnerResource(submission: PartnerResourceSubmission, userId?: string): Promise<string> {
+    const uid = await getEffectiveUserId(userId);
+    const subId = `sub-${Date.now()}`;
+    try {
+      const { error } = await supabase.from('partner_submissions').insert({
+        id: subId,
+        provider_name: submission.provider_name,
+        resource_name: submission.resource_name,
+        summary: submission.summary,
+        category: submission.category,
+        official_url: submission.official_url,
+        contact_email: submission.contact_email,
+        eligibility_summary: submission.eligibility_summary || null,
+        coverage_area: submission.coverage_area || null,
+        status: 'Pending',
+        submitted_by: uid,
+      });
+      if (error) throw error;
+      return subId;
+    } catch (err) {
+      console.error('Failed to submit partner resource to Supabase:', err);
+      throw err;
+    }
+  },
+
+  async getPartnerSubmissions(userId?: string): Promise<any[]> {
+    try {
+      let query = supabase.from('partner_submissions').select('*').order('submitted_at', { ascending: false });
+      if (userId && !userId.startsWith('demo-')) {
+        query = query.eq('submitted_by', userId);
+      }
+      const { data, error } = await query;
+      if (!error && data) {
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to load partner submissions from Supabase:', err);
+    }
+    return [];
+  },
+
+  async getAdminQueue(): Promise<{ partnerSubmissions: any[]; errorReports: any[]; staleResources: Resource[] }> {
+    try {
+      const [subsRes, repsRes, stalesRes] = await Promise.all([
+        supabase.from('partner_submissions').select('*').order('submitted_at', { ascending: false }),
+        supabase.from('resource_reports').select('*').order('created_at', { ascending: false }),
+        supabase.from('resources').select('*').eq('verification_status', 'Needs Re-verification'),
+      ]);
+      return {
+        partnerSubmissions: subsRes.data || [],
+        errorReports: repsRes.data || [],
+        staleResources: (stalesRes.data as Resource[]) || [],
+      };
+    } catch (err) {
+      console.warn('Failed to load admin queue from Supabase:', err);
+    }
     return {
-      partnerSubmissions: [...partnerSubmissions],
-      errorReports: [...submittedReports],
-      staleResources: currentResources.filter((r) => r.verification_status === 'Needs Re-verification')
+      partnerSubmissions: [],
+      errorReports: [],
+      staleResources: [],
     };
   },
 
-  async moderatePartnerSubmission(id: string, action: 'Approved' | 'Rejected'): Promise<boolean> {
-    const sub = partnerSubmissions.find((s) => s.id === id);
-    if (!sub) return false;
-    sub.status = action;
-
+  async moderatePartnerSubmission(submissionId: string, newStatus: 'Approved' | 'Rejected' | 'Needs Info', notes?: string): Promise<boolean> {
     try {
-      fetch(`${API_BASE}/api/admin/partner-submissions/${id}/moderate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Role': 'admin'
-        },
-        body: JSON.stringify({ status: action })
-      }).catch(() => {});
-    } catch {}
-
-    if (action === 'Approved') {
-      currentResources.push({
-        id: `res-approved-${Date.now()}`,
-        name: sub.resource_name,
-        provider_name: sub.provider_name,
-        summary: sub.summary,
-        description: sub.summary,
-        category: sub.category,
-        tags: ["partner-approved", "community-verified"],
-        audience: "Community residents and local entrepreneurs",
-        coverage_type: "Regional",
-        city: "Atlanta",
-        region: "GA",
-        official_url: sub.official_url,
-        eligibility_criteria: {
-          notes: sub.eligibility_summary
-        },
-        required_documents: ["Government photo ID", "Proof of residency or business presence"],
-        application_method: "Apply through official provider website",
-        deadline: "Contact provider for open cycles",
-        cost_details: "Verified nonprofit community program",
-        verification_status: "Verified",
-        source_checked_at: new Date().toISOString().split('T')[0],
-        source_notes: "Approved through Moderator Quality Review seam.",
-        provenance_type: "Partner Submitted & Verified",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
+      const { error } = await supabase
+        .from('partner_submissions')
+        .update({
+          status: newStatus,
+          notes: notes || null,
+          reviewed_at: new Date().toISOString(),
+        })
+        .eq('id', submissionId);
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      console.error('Failed to moderate partner submission on Supabase:', err);
+      throw err;
     }
+  },
 
-    return true;
-  }
+  async getAdminAuditLogs(): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (!error && data) {
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch audit logs from Supabase:', err);
+    }
+    return [];
+  },
 };

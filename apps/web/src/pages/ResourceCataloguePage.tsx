@@ -6,20 +6,16 @@ import { apiService } from '../services/apiService';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { ReportIssueModal } from '../components/resources/ReportIssueModal';
 import { Button } from '../components/common/Button';
-
 export const ResourceCataloguePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [resources, setResources] = useState<Resource[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reportingResource, setReportingResource] = useState<Resource | null>(null);
-
-  // Filters
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('category') || 'All');
   const [selectedCoverage, setSelectedCoverage] = useState<string>('All');
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
-
   const categories: (ResourceCategory | 'All')[] = [
     'All',
     'Small Business Support',
@@ -29,7 +25,6 @@ export const ResourceCataloguePage: React.FC = () => {
     'Housing & Rental Support',
     'Community & Civic Services'
   ];
-
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -45,21 +40,17 @@ export const ResourceCataloguePage: React.FC = () => {
       setResources(resList);
       setSavedIds(saved);
     } catch {
-      // Graceful error state
     } finally {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     loadData();
   }, [selectedCategory, selectedCoverage, selectedStatus]);
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loadData();
   };
-
   const handleToggleSave = async (id: string) => {
     const isNowSaved = await apiService.toggleSaveResource(id);
     if (isNowSaved) {
@@ -68,7 +59,6 @@ export const ResourceCataloguePage: React.FC = () => {
       setSavedIds(prev => prev.filter(x => x !== id));
     }
   };
-
   const clearAllFilters = () => {
     setSearchQuery('');
     setSelectedCategory('All');
@@ -76,10 +66,9 @@ export const ResourceCataloguePage: React.FC = () => {
     setSelectedStatus('All');
     setSearchParams({});
   };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Page Header */}
+      {}
       <div className="space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-bb-brand">
           Verified Catalogue
@@ -91,8 +80,7 @@ export const ResourceCataloguePage: React.FC = () => {
           Every program in this catalogue has been checked against official government, municipal, or nonprofit sources. All entries display their source checked date, eligibility criteria, and official portal links.
         </p>
       </div>
-
-      {/* Search & Filter Bar */}
+      {}
       <div className="bg-white rounded-2xl border border-bb-line p-4 sm:p-6 shadow-sm space-y-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -114,8 +102,7 @@ export const ResourceCataloguePage: React.FC = () => {
             </Button>
           )}
         </form>
-
-        {/* Filter Pills */}
+        {}
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-bb-line">
           <span className="text-xs font-semibold text-bb-ink-muted mr-1">Categories:</span>
           {categories.map((cat) => (
@@ -132,8 +119,7 @@ export const ResourceCataloguePage: React.FC = () => {
             </button>
           ))}
         </div>
-
-        {/* Secondary Filters */}
+        {}
         <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-bb-ink-muted">
           <div className="flex items-center gap-2">
             <span>Coverage:</span>
@@ -148,7 +134,6 @@ export const ResourceCataloguePage: React.FC = () => {
               <option value="Statewide">Statewide Georgia</option>
             </select>
           </div>
-
           <div className="flex items-center gap-2">
             <span>Verification:</span>
             <select
@@ -161,14 +146,12 @@ export const ResourceCataloguePage: React.FC = () => {
               <option value="Needs Re-verification">Needs Re-verification</option>
             </select>
           </div>
-
           <span className="ml-auto font-medium text-bb-ink">
             Showing {resources.length} verified programs
           </span>
         </div>
       </div>
-
-      {/* Results Grid */}
+      {}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -211,8 +194,7 @@ export const ResourceCataloguePage: React.FC = () => {
           ))}
         </div>
       )}
-
-      {/* Modal for reporting issues/corrections */}
+      {}
       <ReportIssueModal
         resource={reportingResource}
         isOpen={!!reportingResource}

@@ -17,7 +17,6 @@ import { apiService } from '../services/apiService';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { ReportIssueModal } from '../components/resources/ReportIssueModal';
-
 export const ResourceDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -26,7 +25,6 @@ export const ResourceDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isReporting, setIsReporting] = useState(false);
   const [addedToPlan, setAddedToPlan] = useState(false);
-
   useEffect(() => {
     const fetchResource = async () => {
       if (!id) return;
@@ -39,20 +37,17 @@ export const ResourceDetailPage: React.FC = () => {
         setResource(res);
         setIsSaved(saved.includes(id));
       } catch {
-        // Handle error
       } finally {
         setIsLoading(false);
       }
     };
     fetchResource();
   }, [id]);
-
   const handleToggleSave = async () => {
     if (!resource) return;
     const nowSaved = await apiService.toggleSaveResource(resource.id);
     setIsSaved(nowSaved);
   };
-
   const handleCreatePlan = async () => {
     if (!resource) return;
     const plan = await apiService.createActionPlanFromResources(
@@ -65,7 +60,6 @@ export const ResourceDetailPage: React.FC = () => {
       navigate(`/app/plans/${plan.id}`);
     }, 600);
   };
-
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-4">
@@ -74,7 +68,6 @@ export const ResourceDetailPage: React.FC = () => {
       </div>
     );
   }
-
   if (!resource) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
@@ -86,10 +79,9 @@ export const ResourceDetailPage: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Navigation Breadcrumb */}
+      {}
       <div>
         <Link
           to="/resources"
@@ -99,8 +91,7 @@ export const ResourceDetailPage: React.FC = () => {
           <span>Back to Resource Catalogue</span>
         </Link>
       </div>
-
-      {/* Main Header Card */}
+      {}
       <header className="bg-white rounded-3xl p-6 sm:p-8 border border-bb-line shadow-card space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -109,7 +100,6 @@ export const ResourceDetailPage: React.FC = () => {
             </span>
             <Badge type="verification" status={resource.verification_status} size="md" />
           </div>
-
           <div className="flex items-center gap-2">
             <Button
               variant={isSaved ? "secondary" : "ghost"}
@@ -128,7 +118,6 @@ export const ResourceDetailPage: React.FC = () => {
             </Button>
           </div>
         </div>
-
         <div>
           <p className="text-xs sm:text-sm font-semibold text-bb-brand tracking-wider uppercase mb-1">
             {resource.provider_name}
@@ -137,12 +126,10 @@ export const ResourceDetailPage: React.FC = () => {
             {resource.name}
           </h1>
         </div>
-
         <p className="text-sm sm:text-base text-bb-ink-muted leading-relaxed">
           {resource.description}
         </p>
-
-        {/* Action Button Bar */}
+        {}
         <div className="pt-4 border-t border-bb-line flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 text-xs text-bb-ink-muted">
             <span className="flex items-center gap-1.5">
@@ -154,7 +141,6 @@ export const ResourceDetailPage: React.FC = () => {
               <span>Checked: {resource.source_checked_at}</span>
             </span>
           </div>
-
           <div className="flex items-center gap-3">
             <a
               href={resource.official_url}
@@ -171,7 +157,6 @@ export const ResourceDetailPage: React.FC = () => {
                 Visit Official Portal
               </Button>
             </a>
-
             <Button
               variant="primary"
               size="md"
@@ -185,16 +170,14 @@ export const ResourceDetailPage: React.FC = () => {
           </div>
         </div>
       </header>
-
-      {/* Structured Facts vs. Items to Confirm (Crucial PRD Requirement) */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* What We Know (Source-Verified Facts) */}
+        {}
         <div className="bg-white rounded-2xl p-6 border border-bb-line shadow-card space-y-4">
           <h2 className="font-serif text-lg font-bold text-bb-ink flex items-center gap-2 pb-2 border-b border-bb-line">
             <CheckCircle2 className="w-5 h-5 text-bb-success" />
             <span>What We Know (From Official Source)</span>
           </h2>
-
           <div className="space-y-3 text-xs leading-relaxed">
             <div>
               <p className="font-semibold text-bb-ink">Application Process:</p>
@@ -218,14 +201,12 @@ export const ResourceDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* What to Confirm with Provider (Uncertainty Checklist) */}
+        {}
         <div className="bg-amber-50/60 rounded-2xl p-6 border border-amber-200/70 shadow-card space-y-4">
           <h2 className="font-serif text-lg font-bold text-amber-950 flex items-center gap-2 pb-2 border-b border-amber-200">
             <HelpCircle className="w-5 h-5 text-amber-800" />
             <span>What to Confirm with Provider</span>
           </h2>
-
           <div className="space-y-3 text-xs text-amber-900 leading-relaxed">
             <p>
               BlockBridge AI never guarantees program admission or assistance. Before submitting materials, verify these specifics with {resource.provider_name}:
@@ -249,8 +230,7 @@ export const ResourceDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Required Documents Section */}
+      {}
       <section className="bg-white rounded-2xl p-6 sm:p-8 border border-bb-line shadow-card space-y-4">
         <h2 className="font-serif text-xl font-bold text-bb-ink flex items-center gap-2">
           <FileText className="w-5 h-5 text-bb-brand" />
@@ -259,7 +239,6 @@ export const ResourceDetailPage: React.FC = () => {
         <p className="text-xs text-bb-ink-muted">
           Based on the official provider requirements, gathering these documents first will speed up your application and prevent processing delays:
         </p>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           {resource.required_documents.map((doc: string, idx: number) => (
             <div
@@ -274,8 +253,7 @@ export const ResourceDetailPage: React.FC = () => {
           ))}
         </div>
       </section>
-
-      {/* Modal for reporting errors */}
+      {}
       <ReportIssueModal
         resource={resource}
         isOpen={isReporting}

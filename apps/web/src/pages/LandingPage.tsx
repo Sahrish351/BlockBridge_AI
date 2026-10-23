@@ -20,24 +20,20 @@ import {
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { VERIFIED_RESOURCES } from '../data/mockData';
-
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [assistQuery, setAssistQuery] = useState('');
-
   const handleAIAssistSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const query = assistQuery.trim() || 'Small business support and grants in Atlanta';
     navigate(`/find-support?description=${encodeURIComponent(query)}`);
   };
-
   const featuredResources = VERIFIED_RESOURCES.slice(0, 3);
-
   return (
     <div className="space-y-24 sm:space-y-32">
-      {/* SECTION 1: EDITORIAL HERO MATCHING EXACT REFERENCE IMAGE */}
+      {}
       <section className="relative pt-6 sm:pt-10 lg:pt-12 pb-8 sm:pb-12 overflow-hidden bg-[#FAF8F3]">
-        {/* Botanical leaf accent at bottom-left corner matching reference */}
+        {}
         <div className="hidden lg:block absolute -bottom-2 left-0 w-36 h-28 pointer-events-none opacity-40 select-none z-0">
           <img
             src="/assets/images/botanical-accent.png"
@@ -46,33 +42,27 @@ export const LandingPage: React.FC = () => {
             className="w-full h-full object-contain"
           />
         </div>
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start lg:items-center">
-            
-            {/* Left Column: Text & Calls to Action (Vertically positioned near top) */}
+            {}
             <div className="lg:col-span-6 space-y-6 sm:space-y-7 pt-2 lg:pt-0">
-              
-              {/* Sage-green pill badge */}
+              {}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DCEBE1] text-[#246B52] text-xs font-bold tracking-wider uppercase shadow-xs">
                 <Sprout className="w-3.5 h-3.5 text-[#246B52] flex-shrink-0" />
                 <span>Community Support, Made Actionable</span>
               </div>
-
-              {/* Large, bold, elegant serif headline on two lines */}
+              {}
               <h1 className="font-serif text-5xl sm:text-6xl lg:text-[70px] xl:text-[76px] text-[#202720] leading-[1.05] tracking-tight">
                 Find the support. <br />
                 <span className="text-[#246B52] italic font-serif font-normal">
                   Take the next step.
                 </span>
               </h1>
-
-              {/* Supporting Copy */}
+              {}
               <p className="text-base sm:text-lg lg:text-[18.5px] text-[#4A554A] leading-relaxed max-w-xl font-normal">
                 BlockBridge AI helps residents and small businesses navigate fragmented public programs, commercial grants, and utility relief. We turn verified public records into an actionable, prioritized plan — so you can move forward with confidence.
               </p>
-
-              {/* Two Horizontally Aligned CTA Buttons */}
+              {}
               <div className="flex flex-wrap items-center gap-3.5 pt-1">
                 <Link
                   to="/resources"
@@ -82,7 +72,6 @@ export const LandingPage: React.FC = () => {
                   <span>Explore Resources</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
-
                 <Link
                   to="/find-support"
                   className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white hover:bg-[#FAF8F3] text-[#202720] border border-[#D5D0C5] hover:border-[#246B52] text-sm font-semibold shadow-sm transition-all group cursor-pointer"
@@ -92,8 +81,7 @@ export const LandingPage: React.FC = () => {
                   <ArrowRight className="w-4 h-4 text-bb-ink-muted transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
-
-              {/* Trust-Feature Row with 4 Items */}
+              {}
               <div className="pt-4 border-t border-[#EAE6DD] flex flex-wrap items-center gap-x-6 gap-y-3 text-xs sm:text-sm text-[#202720] font-medium">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#246B52] flex-shrink-0" />
@@ -113,11 +101,10 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Right Column: Dominant Photography & Single Floating AI Card */}
+            {}
             <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end">
               <div className="relative w-full max-w-[560px]">
-                {/* Visual composition with authentic local merchant photograph */}
+                {}
                 <div className="relative w-full overflow-hidden rounded-3xl shadow-md border border-[#E8E4DA] bg-stone-100">
                   <img
                     src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1200&q=80"
@@ -125,8 +112,7 @@ export const LandingPage: React.FC = () => {
                     className="w-full h-[380px] sm:h-[460px] object-cover select-none"
                     loading="eager"
                   />
-
-                  {/* Single Floating AI Assistance Card - Clean, no duplicate background label */}
+                  {}
                   <div className="absolute right-3 sm:right-5 bottom-3 sm:bottom-5 left-3 sm:left-auto sm:w-[350px] bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-[#E8E4DA] transition-all hover:shadow-2xl z-10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm text-[#202720]">
@@ -138,11 +124,9 @@ export const LandingPage: React.FC = () => {
                         Ready
                       </span>
                     </div>
-
                     <p className="text-[11px] sm:text-xs text-black/60 leading-relaxed mt-1.5 mb-3">
                       Tell us your needs and get personalized resource matches with verified next steps.
                     </p>
-
                     <form onSubmit={handleAIAssistSubmit} className="relative flex items-center bg-[#FAF8F3] border border-[#D5D0C5] rounded-full p-1 pl-3.5 shadow-inner focus-within:border-[#246B52] focus-within:ring-2 focus-within:ring-[#246B52]/20 transition-all">
                       <input
                         type="text"
@@ -163,12 +147,10 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
-      {/* SECTION 2: TRUST STRIP WITH 3 KEY CIVIC PILLARS */}
+      {}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-8 sm:p-10 rounded-3xl bg-white border border-bb-line shadow-card">
           <div className="flex items-start gap-4">
@@ -184,7 +166,6 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
           </div>
-
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center flex-shrink-0">
               <HelpCircle className="w-6 h-6" />
@@ -198,7 +179,6 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
           </div>
-
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-bb-coral-soft text-bb-coral flex items-center justify-center flex-shrink-0">
               <Compass className="w-6 h-6" />
@@ -214,8 +194,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* SECTION 3: TWO CLEAR PATHWAYS WITH AUTHENTIC PHOTOGRAPHY */}
+      {}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-bb-brand">
@@ -228,9 +207,8 @@ export const LandingPage: React.FC = () => {
             Whether you are a neighbor seeking household stability or an entrepreneur building a local business, we meet you with dignity and practical tools.
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Pathway 1: Residents */}
+          {}
           <div className="bg-white rounded-3xl border border-bb-line shadow-card hover:shadow-card-hover transition-all overflow-hidden flex flex-col justify-between group">
             <div className="relative h-56 sm:h-64 overflow-hidden bg-stone-100">
               <img
@@ -245,7 +223,6 @@ export const LandingPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
             <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
               <div className="space-y-3">
                 <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bb-ink group-hover:text-bb-brand transition-colors">
@@ -254,7 +231,6 @@ export const LandingPage: React.FC = () => {
                 <p className="text-sm sm:text-base text-bb-ink-muted leading-relaxed">
                   Connect with verified programs for utility bill relief (LIHEAP), local emergency food pantries (ACFB), affordable housing directories, and tuition-free career certifications.
                 </p>
-
                 <div className="flex flex-wrap gap-2 pt-1">
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Heating & Electric Grants</span>
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Food Pantry Network</span>
@@ -262,7 +238,6 @@ export const LandingPage: React.FC = () => {
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Vocational Training</span>
                 </div>
               </div>
-
               <div className="pt-6">
                 <Link to="/find-support?type=resident">
                   <Button variant="primary" size="md" className="w-full" rightIcon={<ArrowRight className="w-4 h-4" />}>
@@ -272,8 +247,7 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Pathway 2: Small Business Owners */}
+          {}
           <div className="bg-white rounded-3xl border border-bb-line shadow-card hover:shadow-card-hover transition-all overflow-hidden flex flex-col justify-between group">
             <div className="relative h-56 sm:h-64 overflow-hidden bg-stone-100">
               <img
@@ -288,7 +262,6 @@ export const LandingPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
             <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
               <div className="space-y-3">
                 <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bb-ink group-hover:text-bb-coral transition-colors">
@@ -297,7 +270,6 @@ export const LandingPage: React.FC = () => {
                 <p className="text-sm sm:text-base text-bb-ink-muted leading-relaxed">
                   Discover non-predatory CDFI loan financing (ACE Loans), municipal commercial funds (Invest Atlanta), business incubation (RICE), and free 1-on-1 mentor advising.
                 </p>
-
                 <div className="flex flex-wrap gap-2 pt-1">
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Commercial Microloans</span>
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Equipment Grants</span>
@@ -305,7 +277,6 @@ export const LandingPage: React.FC = () => {
                   <span className="text-xs px-3 py-1 rounded-lg bg-bb-surface-soft text-bb-ink font-medium">Incubator Cohorts</span>
                 </div>
               </div>
-
               <div className="pt-6">
                 <Link to="/find-support?type=small_business">
                   <Button variant="secondary" size="md" className="w-full" rightIcon={<ArrowRight className="w-4 h-4" />}>
@@ -317,7 +288,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
       {/* SECTION 4: THE 4-STAGE PROCESS EXPLANATION */}
       <section className="bg-bb-surface-soft py-20 sm:py-28 border-y border-bb-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
@@ -332,7 +302,6 @@ export const LandingPage: React.FC = () => {
               We eliminate confusing government acronyms and circular application mazes with four intentional steps.
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
             <div className="bg-white rounded-3xl p-7 border border-bb-line shadow-sm space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-bb-brand text-white font-serif font-bold text-xl flex items-center justify-center">
@@ -345,7 +314,6 @@ export const LandingPage: React.FC = () => {
                 Tell us your situation in plain language. We never ask for sensitive data like Social Security numbers, bank credentials, or legal documents.
               </p>
             </div>
-
             <div className="bg-white rounded-3xl p-7 border border-bb-line shadow-sm space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-bb-brand text-white font-serif font-bold text-xl flex items-center justify-center">
                 2
@@ -357,7 +325,6 @@ export const LandingPage: React.FC = () => {
                 Our engine matches your request strictly against our verified catalogue of active community and municipal programs. No fabricated resources.
               </p>
             </div>
-
             <div className="bg-white rounded-3xl p-7 border border-bb-line shadow-sm space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-amber-700 text-white font-serif font-bold text-xl flex items-center justify-center">
                 3
@@ -369,7 +336,6 @@ export const LandingPage: React.FC = () => {
                 We clearly separate confirmed facts from details you must confirm with the provider (such as funding windows or documentation requirements).
               </p>
             </div>
-
             <div className="bg-white rounded-3xl p-7 border border-bb-line shadow-sm space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-bb-coral text-white font-serif font-bold text-xl flex items-center justify-center">
                 4
@@ -384,7 +350,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
       {/* SECTION 5: FEATURED VERIFIED COMMUNITY RESOURCES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -399,14 +364,12 @@ export const LandingPage: React.FC = () => {
               All entries have verified source links, human-checked eligibility criteria, and transparent last-verified dates.
             </p>
           </div>
-
           <Link to="/resources">
             <Button variant="secondary" size="md" rightIcon={<ArrowRight className="w-4 h-4" />}>
               View All 12 Verified Programs
             </Button>
           </Link>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredResources.map((res) => (
             <article
@@ -420,7 +383,6 @@ export const LandingPage: React.FC = () => {
                   </span>
                   <Badge type="verification" status={res.verification_status} size="sm" />
                 </div>
-
                 <div>
                   <p className="text-xs font-bold text-bb-brand uppercase tracking-wider">
                     {res.provider_name}
@@ -429,11 +391,9 @@ export const LandingPage: React.FC = () => {
                     <Link to={`/resources/${res.id}`}>{res.name}</Link>
                   </h3>
                 </div>
-
                 <p className="text-sm text-bb-ink-muted line-clamp-3 leading-relaxed">
                   {res.summary}
                 </p>
-
                 <div className="pt-2 flex flex-wrap items-center gap-3 text-xs text-bb-ink-muted border-t border-bb-line">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-bb-brand" />
@@ -445,7 +405,6 @@ export const LandingPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-
               <div className="pt-6 flex items-center justify-between border-t border-bb-line mt-6">
                 <a
                   href={res.official_url}
@@ -456,7 +415,6 @@ export const LandingPage: React.FC = () => {
                   <span>Official Portal</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
-
                 <Link to={`/resources/${res.id}`}>
                   <Button variant="ghost" size="sm">
                     View Details
@@ -467,12 +425,10 @@ export const LandingPage: React.FC = () => {
           ))}
         </div>
       </section>
-
       {/* SECTION 6: DEDICATED SMALL-BUSINESS & DIGNITY FOCUS WITH PHOTOGRAPHY */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl border border-bb-line p-8 sm:p-12 shadow-card overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
             <div className="lg:col-span-6 space-y-6">
               <span className="text-xs font-bold uppercase tracking-wider text-bb-brand">
                 Black Code Collective Hacktoberfest • Track 3
@@ -486,7 +442,6 @@ export const LandingPage: React.FC = () => {
               <p className="text-base text-bb-ink-muted leading-relaxed font-normal">
                 BlockBridge AI treats community members as capable decision-makers. We do not use deficit framing, stigmatizing labels, or forced disclosure of sensitive personal data. We give you clean, source-backed roadmaps to help you claim what you are entitled to.
               </p>
-
               <div className="space-y-3 pt-2 text-sm text-bb-ink">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-bb-brand flex-shrink-0 mt-0.5" />
@@ -502,7 +457,6 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
             <div className="lg:col-span-6 relative">
               <div className="rounded-3xl overflow-hidden shadow-elevated border border-bb-line aspect-[4/3] bg-stone-100">
                 <img
@@ -512,11 +466,9 @@ export const LandingPage: React.FC = () => {
                 />
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
       {/* SECTION 7: RESPONSIBLE AI COMMITMENTS & UNCERTAINTY */}
       <section className="bg-bb-surface-soft py-16 sm:py-24 border-y border-bb-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -531,7 +483,6 @@ export const LandingPage: React.FC = () => {
               AI should organize and clarify information—not make authoritative or unaccountable decisions about people's lives.
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white rounded-2xl p-6 border border-bb-line shadow-sm space-y-2">
               <p className="font-serif font-bold text-base text-bb-ink">1. Strict Catalogue Grounding</p>
@@ -539,21 +490,18 @@ export const LandingPage: React.FC = () => {
                 The AI cannot invent grants, programs, or deadlines. Recommendations are restricted to verified public records.
               </p>
             </div>
-
             <div className="bg-white rounded-2xl p-6 border border-bb-line shadow-sm space-y-2">
               <p className="font-serif font-bold text-base text-bb-ink">2. Zero Guaranteed Approval</p>
               <p className="text-xs text-bb-ink-muted leading-relaxed">
                 The platform never guarantees benefits or claims an applicant qualifies. The provider makes all final decisions.
               </p>
             </div>
-
             <div className="bg-white rounded-2xl p-6 border border-bb-line shadow-sm space-y-2">
               <p className="font-serif font-bold text-base text-bb-ink">3. Transparent Uncertainty</p>
               <p className="text-xs text-bb-ink-muted leading-relaxed">
                 Unconfirmed requirements (like income limits or zip code boundaries) are labeled as items you must verify.
               </p>
             </div>
-
             <div className="bg-white rounded-2xl p-6 border border-bb-line shadow-sm space-y-2">
               <p className="font-serif font-bold text-base text-bb-ink">4. Human Moderation Seam</p>
               <p className="text-xs text-bb-ink-muted leading-relaxed">
@@ -563,8 +511,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* SECTION 8: COMMUNITY PARTNER CALLOUT WITH REAL PHOTO */}
+      {}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden shadow-elevated border border-bb-line">
           <img
@@ -599,8 +546,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* SECTION 9: FINAL MEMORABLE CTA */}
+      {}
       <section className="max-w-4xl mx-auto px-4 text-center space-y-6 py-8">
         <h2 className="font-serif text-3xl sm:text-5xl font-bold text-bb-ink">
           Start with one next step today.

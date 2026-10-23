@@ -62,11 +62,11 @@ The platform provides four dedicated, role-specific workspaces matching the offi
 - **Resident Dashboard:** Reduced hero height to `h-44 md:h-auto` with tightened `space-y-6` hierarchy, keeping active checklist steps in immediate view.
 - **Partner & Admin Dashboards:** Unified card padding to `p-5` with compact metric grids (`gap-3.5`).
 
-### D. Supabase Production Migration & Database Grounding
-- **Migration File:** Created `supabase/migrations/20261021000000_initial_schema.sql` covering tables `profiles`, `resources`, `saved_resources`, `action_plans`, `plan_steps`, `partner_submissions`, `resource_reports`, and `audit_logs`.
-- **Security:** Complete Row Level Security (RLS) policies enforcing user data isolation and civic reviewer role checks.
-- **Seed Data:** Populated with 12 verified Atlanta community assistance resources.
-- **Resilience:** Offline-first fallback in `apiService.ts` and SQLite backend ensures uninterrupted demo operation if cloud connectivity is pending.
+### D. Supabase Production Migration & Complete Database Persistence
+- **Live Database Grounding:** All 8 application tables (`profiles`, `resources`, `saved_resources`, `action_plans`, `plan_steps`, `partner_submissions`, `resource_reports`, `audit_logs`) are fully deployed, verified, and populated with 12 source-verified Atlanta programs in Supabase Postgres.
+- **Frontend Persistence Migration:** `apps/web/src/services/apiService.ts` and `apps/web/src/context/AuthContext.tsx` have been fully migrated from `localStorage` to real Supabase Postgres queries. All action plans, plan steps, saved resources, partner submissions, and error reports are persisted directly to Supabase with real user UUID foreign keys.
+- **RLS & Security Isolation:** Strict Row Level Security is active. Unauthenticated and non-admin queries use the public Anon key. Authenticated operations use real Supabase JWT sessions. User data is strictly isolated (`auth.uid() = user_id`), and client elevation to `admin` is prevented at the database trigger layer.
+- **Role of SQLite:** Local SQLite (`apps/api/blockbridge.db`) remains exclusively as a local test fixture for `pytest` suites and an offline deterministic fallback for the FastAPI AI recommendation endpoints. All production frontend user data is persisted directly to Supabase Postgres.
 
 ---
 

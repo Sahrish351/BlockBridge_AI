@@ -14,28 +14,21 @@ import { ActionPlan, PlanStep, PlanStepStatus } from '../types';
 import { apiService } from '../services/apiService';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
-
 interface ActionPlanPageProps {
   planId?: string;
 }
-
 export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlanId }) => {
   const { id: routeId } = useParams<{ id: string }>();
   const id = propPlanId || routeId;
   const [plan, setPlan] = useState<ActionPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Custom Task Modal
   const [isAddingStep, setIsAddingStep] = useState(false);
   const [newStepTitle, setNewStepTitle] = useState('');
   const [newStepDesc, setNewStepDesc] = useState('');
   const [newStepDate, setNewStepDate] = useState('');
   const [newStepUrl, setNewStepUrl] = useState('');
-
-  // Active Note Editing
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState('');
-
   const loadPlan = async () => {
     setIsLoading(true);
     try {
@@ -47,16 +40,13 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
         setPlan(list[0] || null);
       }
     } catch {
-      // Error
     } finally {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     loadPlan();
   }, [id]);
-
   const handleStatusChange = async (stepId: string, newStatus: PlanStepStatus) => {
     if (!plan) return;
     const updated = await apiService.updatePlanStepStatus(plan.id, stepId, newStatus);
@@ -70,7 +60,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
       });
     }
   };
-
   const handleSaveNote = async (stepId: string) => {
     if (!plan) return;
     await apiService.updatePlanStepStatus(plan.id, stepId, plan.tasks.find(t => t.id === stepId)?.status || 'Not Started', noteDraft);
@@ -83,11 +72,9 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
     });
     setEditingNoteId(null);
   };
-
   const handleAddCustomStep = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!plan || !newStepTitle.trim()) return;
-
     await apiService.addPlanStep(plan.id, {
       title: newStepTitle,
       description: newStepDesc,
@@ -95,7 +82,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
       due_date: newStepDate || undefined,
       source_url: newStepUrl || undefined,
     });
-
     setNewStepTitle('');
     setNewStepDesc('');
     setNewStepDate('');
@@ -103,7 +89,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
     setIsAddingStep(false);
     loadPlan();
   };
-
   const handleDeleteStep = async (stepId: string) => {
     if (!plan) return;
     await apiService.deletePlanStep(plan.id, stepId);
@@ -115,7 +100,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
       };
     });
   };
-
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-3">
@@ -124,7 +108,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
       </div>
     );
   }
-
   if (!plan) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
@@ -136,10 +119,8 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
       </div>
     );
   }
-
   const completedCount = plan.tasks.filter(t => t.status === 'Completed').length;
   const progressPercent = Math.round((completedCount / (plan.tasks.length || 1)) * 100);
-
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Top Breadcrumb & Print Toolbar */}
@@ -151,7 +132,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           <ArrowLeft className="w-4 h-4" />
           <span>Back to My Dashboard</span>
         </Link>
-
         <div className="flex items-center gap-2">
           <Button
             variant="secondary"
@@ -171,7 +151,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           </Button>
         </div>
       </div>
-
       {/* Plan Overview Card */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-bb-line shadow-card space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-bb-line">
@@ -186,7 +165,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
               Goal: <strong className="text-bb-ink">{plan.goal}</strong>
             </p>
           </div>
-
           <div className="sm:text-right">
             <span className="text-2xl font-serif font-bold text-bb-brand">
               {progressPercent}%
@@ -196,7 +174,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
             </span>
           </div>
         </div>
-
         {/* Progress bar */}
         <div className="w-full bg-bb-line h-3 rounded-full overflow-hidden">
           <div
@@ -205,7 +182,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           ></div>
         </div>
       </div>
-
       {/* Tasks List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -216,12 +192,10 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
             Click status to mark progress
           </span>
         </div>
-
         <div className="space-y-3">
           {plan.tasks.map((task: PlanStep, idx: number) => {
             const isCompleted = task.status === 'Completed';
             const isInProgress = task.status === 'In Progress';
-
             return (
               <div
                 key={task.id}
@@ -249,7 +223,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                     >
                       {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs font-bold">{idx + 1}</span>}
                     </button>
-
                     <div className="space-y-1.5 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h4 className={`text-sm sm:text-base font-semibold ${isCompleted ? 'line-through text-bb-ink-muted' : 'text-bb-ink'}`}>
@@ -262,11 +235,9 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                           </span>
                         )}
                       </div>
-
                       <p className="text-xs text-bb-ink-muted leading-relaxed">
                         {task.description}
                       </p>
-
                       {/* Source Link */}
                       {task.source_url && (
                         <div className="pt-1">
@@ -281,7 +252,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                           </a>
                         </div>
                       )}
-
                       {/* Notes Box */}
                       {editingNoteId === task.id ? (
                         <div className="pt-2 space-y-2">
@@ -320,8 +290,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                       )}
                     </div>
                   </div>
-
-                  {/* Status Dropdown & Delete (Hidden in Print) */}
+                  {}
                   <div className="flex items-center gap-2 self-start no-print">
                     <select
                       value={task.status}
@@ -333,7 +302,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                       <option value="Completed">Completed</option>
                       <option value="Blocked">Blocked</option>
                     </select>
-
                     <button
                       onClick={() => handleDeleteStep(task.id)}
                       className="p-1.5 rounded-lg text-bb-ink-subtle hover:text-bb-danger transition-colors cursor-pointer"
@@ -349,8 +317,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           })}
         </div>
       </div>
-
-      {/* Modal to Add Custom Task */}
+      {}
       <Modal
         isOpen={isAddingStep}
         onClose={() => setIsAddingStep(false)}
@@ -371,7 +338,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
               className="w-full text-xs px-3 py-2 rounded-xl bg-bb-surface-soft border border-bb-line text-bb-ink focus:outline-none focus:ring-2 focus:ring-bb-focus"
             />
           </div>
-
           <div>
             <label className="block text-xs font-semibold text-bb-ink mb-1">
               Description / Action Details
@@ -384,7 +350,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
               className="w-full text-xs p-3 rounded-xl bg-bb-surface-soft border border-bb-line text-bb-ink focus:outline-none focus:ring-2 focus:ring-bb-focus resize-none"
             />
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-bb-ink mb-1">
@@ -397,7 +362,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                 className="w-full text-xs px-3 py-2 rounded-xl bg-bb-surface-soft border border-bb-line text-bb-ink focus:outline-none focus:ring-2 focus:ring-bb-focus"
               />
             </div>
-
             <div>
               <label className="block text-xs font-semibold text-bb-ink mb-1">
                 Source Link (Optional)
@@ -411,7 +375,6 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
               />
             </div>
           </div>
-
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-bb-line">
             <Button variant="ghost" size="sm" type="button" onClick={() => setIsAddingStep(false)}>
               Cancel

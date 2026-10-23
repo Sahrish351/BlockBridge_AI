@@ -23,7 +23,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 export const DashboardPage: React.FC = () => {
-  const { role, signInDemoRole } = useAuth();
+  const { user, role, signInDemoRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -218,14 +218,27 @@ export const DashboardPage: React.FC = () => {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const [allPlans, savedIds, allRes] = await Promise.all([
-        apiService.getActionPlans(),
-        apiService.getSavedResourceIds(),
+      const [allPlans, savedIds, allRes, remoteSubs] = await Promise.all([
+        apiService.getActionPlans(user?.id),
+        apiService.getSavedResourceIds(user?.id),
         apiService.getResources(),
+        apiService.getPartnerSubmissions(user?.id),
       ]);
       setPlans(allPlans);
       setSavedResourceIds(savedIds);
       setAllResources(allRes);
+      if (remoteSubs && remoteSubs.length > 0) {
+        setPartnerSubmissions(remoteSubs.map((s: any) => ({
+          id: s.id,
+          name: s.resource_name,
+          organization: s.provider_name,
+          category: s.category,
+          submitted: s.submitted_at ? new Date(s.submitted_at).toLocaleDateString() : 'Recent',
+          status: s.status,
+          notes: s.notes || 'Under review by Atlanta Civic Review committee.',
+          url: s.official_url,
+        })));
+      }
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     } finally {
@@ -234,7 +247,7 @@ export const DashboardPage: React.FC = () => {
   };
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [user?.id, activeRole]);
   const savedResourcesList = allResources.filter(r => savedResourceIds.includes(r.id));
   return (
     <DashboardLayout activeRole={activeRole} onRoleChange={handleRoleChange}>

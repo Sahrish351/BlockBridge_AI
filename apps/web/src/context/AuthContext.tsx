@@ -25,27 +25,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DEMO_PERSONAS: Record<UserRole, UserProfile> = {
+const DEMO_PERSONAS: Record<UserRole, UserProfile & { password?: string }> = {
   resident: {
-    id: 'demo-resident-keisha',
-    email: 'keisha.jenkins@community.org',
+    id: 'c79e1926-a3a6-41ec-88ef-bd06272ca7ac',
+    email: 'keisha.jenkins@blockbridge.org',
     display_name: 'Keisha Jenkins',
     role: 'resident',
   },
   small_business: {
-    id: 'demo-business-marcus',
+    id: 'ede69e22-4380-4374-b988-75ef4cb89ca4',
     email: 'marcus.vance@vanceroasters.com',
     display_name: 'Marcus Vance',
     role: 'small_business',
   },
   partner: {
-    id: 'demo-partner-westside',
+    id: '0bd8eabf-c37d-4393-864f-25e334981207',
     email: 'coordinator@westsidefuturefund.org',
     display_name: 'Westside Community Partner',
     role: 'partner',
   },
   admin: {
-    id: 'demo-admin-reviewer',
+    id: 'e3aeab14-f80d-466a-bb96-39d3501de48e',
     email: 'civic.reviewer@blockbridge.org',
     display_name: 'Senior Civic Reviewer',
     role: 'admin',
@@ -57,26 +57,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load active session from Supabase or localStorage
   useEffect(() => {
     const initializeAuth = async () => {
       setIsLoading(true);
 
-      // Check localStorage for demo persona first
       const storedDemo = localStorage.getItem('bb_demo_profile');
       if (storedDemo) {
         try {
           const parsed = JSON.parse(storedDemo);
           setProfile(parsed);
           setUser({ id: parsed.id, email: parsed.email });
-          setIsLoading(false);
-          return;
         } catch {
           localStorage.removeItem('bb_demo_profile');
         }
       }
 
-      // Check real Supabase session
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
@@ -89,6 +84,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             display_name: metaName,
             role: metaRole,
           });
+        } else if (!storedDemo) {
+          const defaultDemo = DEMO_PERSONAS.resident;
+          try {
+            const { data } = await supabase.auth.signInWithPassword({
+              email: defaultDemo.email,
+              password: 'DemoPassword2026!',
+            });
+            if (data?.user) {
+              setUser(data.user);
+              setProfile({
+                id: data.user.id,
+                email: data.user.email || defaultDemo.email,
+                display_name: defaultDemo.display_name,
+                role: defaultDemo.role,
+              });
+              localStorage.setItem('bb_demo_profile', JSON.stringify(defaultDemo));
+            }
+          } catch {}
         }
       } catch (err) {
         console.warn('Supabase auth initialization:', err);
@@ -99,7 +112,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuth();
 
-    // Listen to real Supabase auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
@@ -111,7 +123,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           display_name: metaName,
           role: metaRole,
         });
-        localStorage.removeItem('bb_demo_profile');
       }
     });
 
@@ -204,7 +215,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await supabase.auth.signOut();
     } catch {
-      // Ignore
     } finally {
       localStorage.removeItem('bb_demo_profile');
       setUser(null);
@@ -228,6 +238,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInDemoRole = async (role: UserRole) => {
     setIsLoading(true);
     const demoProf = DEMO_PERSONAS[role];
+    try {
+      const { data } = await supabase.auth.signInWithPassword({
+        email: demoProf.email,
+        password: 'DemoPassword2026!',
+      });
+      if (data?.user) {
+        setUser(data.user);
+        setProfile({
+          id: data.user.id,
+          email: data.user.email || demoProf.email,
+          display_name: demoProf.display_name,
+          role: demoProf.role,
+        });
+        localStorage.setItem('bb_demo_profile', JSON.stringify(demoProf));
+        setIsLoading(false);
+        return;
+      }
+    } catch {}
+
     localStorage.setItem('bb_demo_profile', JSON.stringify(demoProf));
     setProfile(demoProf);
     setUser({ id: demoProf.id, email: demoProf.email });
@@ -260,4 +289,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
