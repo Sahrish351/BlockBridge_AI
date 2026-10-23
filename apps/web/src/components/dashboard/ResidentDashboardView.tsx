@@ -44,15 +44,15 @@ export const ResidentDashboardView: React.FC<ResidentDashboardViewProps> = ({
             Here's your personalized support overview and next steps.
           </p>
         </div>
-        {/* Location Pill */}
+        
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EBF3ED] border border-[#C5DEC8] text-[#143D2F] text-xs font-semibold self-start sm:self-center shadow-xs">
           <MapPin className="w-3.5 h-3.5 text-[#246B52]" />
           <span>Bankhead, Atlanta</span>
         </div>
       </div>
-      {/* Progress Hero Banner & Quick Stats Grid */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Hero: Split Progress Card */}
+        
         <div className="lg:col-span-8 bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row">
           <div className="md:w-5/12 h-44 md:h-auto relative overflow-hidden bg-stone-100 flex-shrink-0">
             <img

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from models import ResourceSchema, ResourceMatchSchema, IntakeRequestSchema
 
-# Load environment variables
+
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -98,7 +98,7 @@ def ai_match_resources(intake: IntakeRequestSchema) -> List[ResourceMatchSchema]
         print("[AI Matcher] GEMINI_API_KEY not configured. Falling back to deterministic matcher.")
         return match_resources(intake)
 
-    # Prepare compact grounded catalogue representation
+    
     catalogue_summary = []
     for r in resources:
         catalogue_summary.append({
@@ -171,14 +171,14 @@ def ai_match_resources(intake: IntakeRequestSchema) -> List[ResourceMatchSchema]
             if candidates:
                 raw_text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
                 if raw_text.strip().startswith("```"):
-                    # Strip any markdown code fence if present
+                    
                     raw_text = raw_text.strip().strip("`")
                     if raw_text.startswith("json"):
                         raw_text = raw_text[4:].strip()
                 
                 parsed_matches = json.loads(raw_text)
                 if isinstance(parsed_matches, list):
-                    # Map to resource schema
+                    
                     res_map = {r["id"]: r for r in resources}
                     final_results: List[ResourceMatchSchema] = []
                     
@@ -203,5 +203,5 @@ def ai_match_resources(intake: IntakeRequestSchema) -> List[ResourceMatchSchema]
     except Exception as e:
         print(f"[AI Matcher] Gemini call failed with error: {e}. Falling back to deterministic matcher.")
 
-    # Seamless deterministic fallback
+    
     return match_resources(intake)

@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
     <footer className="bg-bb-surface-soft border-t border-bb-line text-bb-ink-muted text-sm pt-16 pb-12 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-bb-line">
-          {/* Brand Col */}
+          
           <div className="md:col-span-1 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-bb-brand text-white flex items-center justify-center">
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Nav Column 1: Discover Support */}
+          
           <div>
             <h4 className="font-semibold text-bb-ink uppercase text-xs tracking-wider mb-3">
               Discover Support
@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Nav Column 2: Platform & Integrity */}
+          
           <div>
             <h4 className="font-semibold text-bb-ink uppercase text-xs tracking-wider mb-3">
               Civic Platform & Partners
@@ -88,7 +88,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Nav Column 3: Trust & Responsibility */}
+          
           <div>
             <h4 className="font-semibold text-bb-ink uppercase text-xs tracking-wider mb-3">
               Trust & Responsibility
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Mandatory PRD Disclaimer & Limitations Statement */}
+        
         <div className="pt-8 space-y-4">
           <div className="bg-white/80 p-4 rounded-xl border border-bb-line text-xs leading-relaxed text-bb-ink-muted">
             <p className="font-semibold text-bb-ink mb-1 flex items-center gap-1.5">

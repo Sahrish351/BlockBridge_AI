@@ -43,13 +43,13 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Brand Logo & Wordmark */}
+          
           <Link
             to="/"
             className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-bb-focus rounded-xl p-1"
             aria-label="BlockBridge AI Home"
           >
-            {/* Logo Badge matching reference: Forest-green rounded square with community icon */}
+            
             <div className="w-11 h-11 rounded-2xl bg-[#246B52] text-white flex items-center justify-center shadow-sm group-hover:bg-[#1B533F] transition-colors flex-shrink-0">
               <svg
                 className="w-6 h-6 text-white"
@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
                 strokeLinejoin="round"
                 aria-hidden="true"
               >
-                {/* Clean bridge/community house path matching reference */}
+                
                 <path d="M3 10.5L12 3l9 7.5" />
                 <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" />
                 <path d="M9 21v-7a3 3 0 0 1 6 0v7" />
@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links with Reference Underline indicator */}
+          
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navLinks.map((link) => {
               const active = isActive(link.path);
@@ -101,7 +101,7 @@ export const Navbar: React.FC = () => {
                   {link.hasDropdown && (
                     <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-0.5" />
                   )}
-                  {/* Active bottom underline pill (like in reference image for Home) */}
+                  
                   {active && (
                     <span className="absolute bottom-0 left-3.5 right-3.5 h-[2.5px] bg-[#246B52] rounded-full"></span>
                   )}
@@ -110,7 +110,7 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Desktop Action Buttons: Search Icon + Sign In + Get Started Button */}
+          
           <div className="hidden sm:flex items-center gap-4">
             <Link
               to="/resources"
@@ -158,7 +158,7 @@ export const Navbar: React.FC = () => {
                   Sign In
                 </Link>
 
-                {/* Primary CTA pill matching reference: Forest green rounded-full with arrow */}
+                
                 <Link
                   to="/find-support"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#246B52] hover:bg-[#1B533F] text-white text-sm font-medium shadow-sm transition-all hover:shadow-md cursor-pointer group"
@@ -170,7 +170,7 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Menu Hamburger */}
+          
           <div className="flex sm:hidden items-center gap-2">
             <Link to="/find-support">
               <span className="px-3.5 py-1.5 rounded-full bg-[#246B52] text-white text-xs font-semibold">
@@ -189,7 +189,7 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      
       {mobileMenuOpen && (
         <div className="sm:hidden border-b border-bb-line bg-[#FAF8F3] px-4 pt-3 pb-6 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <div className="space-y-1">

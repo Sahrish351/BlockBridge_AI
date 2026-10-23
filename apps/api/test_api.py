@@ -16,7 +16,7 @@ def test_get_resources():
     assert response.status_code == 200
     resources = response.json()
     assert len(resources) >= 12
-    # Verify required schema fields
+    
     first = resources[0]
     assert "id" in first
     assert "name" in first
@@ -44,7 +44,7 @@ def test_get_resource_by_id():
     assert response.status_code == 200
     assert response.json()["id"] == "res-001"
 
-    # Non-existent
+    
     response_404 = client.get("/api/resources/res-nonexistent-999")
     assert response_404.status_code == 404
 
@@ -88,18 +88,18 @@ def test_action_plan_crud():
     plan_id = created["id"]
     assert created["title"] == new_plan["title"]
 
-    # Retrieve by ID
+    
     get_resp = client.get(f"/api/action-plans/{plan_id}")
     assert get_resp.status_code == 200
     assert get_resp.json()["id"] == plan_id
 
 def test_admin_authorization_enforcement():
-    # Unauthorized request (no admin role header)
+    
     unauth_resp = client.get("/api/admin/review-queue")
     assert unauth_resp.status_code == 403
     assert "Administrator role authorization required" in unauth_resp.json()["detail"]
 
-    # Authorized request (with X-User-Role: admin)
+    
     auth_resp = client.get("/api/admin/review-queue", headers={"X-User-Role": "admin"})
     assert auth_resp.status_code == 200
     queue = auth_resp.json()
@@ -123,7 +123,7 @@ def test_partner_submission_workflow():
     assert "id" in resp.json()
     sub_id = resp.json()["id"]
 
-    # Moderate as admin
+    
     mod_resp = client.post(
         f"/api/admin/partner-submissions/{sub_id}/moderate",
         json={"status": "Approved"},

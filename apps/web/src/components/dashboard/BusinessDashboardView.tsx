@@ -65,7 +65,7 @@ export const BusinessDashboardView: React.FC = () => {
           Here's your business support overview and upcoming opportunities.
         </p>
       </div>
-      {/* Profile Banner Card - Compact, balanced height without empty vertical space */}
+      
       <div className="bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between">
         <div className="p-5 sm:p-6 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export const BusinessDashboardView: React.FC = () => {
             </Link>
           </div>
         </div>
-        {/* Café/Barista Photo - Compact horizontal balance */}
+        
         <div className="w-full md:w-64 h-36 md:h-28 relative overflow-hidden bg-stone-100 flex-shrink-0">
           <img
             src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80"
@@ -101,9 +101,9 @@ export const BusinessDashboardView: React.FC = () => {
           />
         </div>
       </div>
-      {/* 4 KPI Cards in a Row - Compact, uniform height */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* Card 1: Capital Readiness */}
+        
         <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <span className="text-xs font-medium text-black/60">Capital Readiness</span>
           <div className="font-serif text-2xl font-bold text-[#202720]">
@@ -111,7 +111,7 @@ export const BusinessDashboardView: React.FC = () => {
           </div>
           <span className="text-[10px] text-black/50">Target grant range (Illustrative Demo)</span>
         </div>
-        {/* Card 2: Prerequisites */}
+        
         <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <span className="text-xs font-medium text-black/60">Prerequisites</span>
           <div className="font-serif text-2xl font-bold text-[#202720]">
@@ -124,7 +124,7 @@ export const BusinessDashboardView: React.FC = () => {
             />
           </div>
         </div>
-        {/* Card 3: Next Deadline */}
+        
         <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-[#E8E4DA] shadow-sm flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-black/60">Next Cohort Target</span>
@@ -137,7 +137,7 @@ export const BusinessDashboardView: React.FC = () => {
             RICE Fall Cohort (Quarterly Rolling)
           </span>
         </div>
-        {/* Card 4: Find Business Support (Green Card with +) */}
+        
         <Link
           to="/app/find-support?type=business"
           className="bg-[#143D2F] text-white rounded-2xl p-4 sm:p-4.5 shadow-sm hover:bg-[#1C503E] transition-all flex flex-col justify-between space-y-2 group"
@@ -155,9 +155,9 @@ export const BusinessDashboardView: React.FC = () => {
           </p>
         </Link>
       </div>
-      {/* Lower Section: Your Business Roadmap (Left) & Recommended Opportunities (Right) */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Your Business Roadmap */}
+        
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">
@@ -216,7 +216,7 @@ export const BusinessDashboardView: React.FC = () => {
             })}
           </div>
         </div>
-        {/* Right Column: Recommended Opportunities */}
+        
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-xl font-bold text-[#202720]">

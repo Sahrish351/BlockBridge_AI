@@ -288,7 +288,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* SECTION 4: THE 4-STAGE PROCESS EXPLANATION */}
+      
       <section className="bg-bb-surface-soft py-20 sm:py-28 border-y border-bb-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -350,7 +350,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* SECTION 5: FEATURED VERIFIED COMMUNITY RESOURCES */}
+      
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
@@ -425,7 +425,7 @@ export const LandingPage: React.FC = () => {
           ))}
         </div>
       </section>
-      {/* SECTION 6: DEDICATED SMALL-BUSINESS & DIGNITY FOCUS WITH PHOTOGRAPHY */}
+      
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl border border-bb-line p-8 sm:p-12 shadow-card overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -469,7 +469,7 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* SECTION 7: RESPONSIBLE AI COMMITMENTS & UNCERTAINTY */}
+      
       <section className="bg-bb-surface-soft py-16 sm:py-24 border-y border-bb-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">

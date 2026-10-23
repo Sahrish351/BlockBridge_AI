@@ -21,7 +21,7 @@ export const HowItWorksPage: React.FC = () => {
         </p>
       </div>
 
-      {/* 4 Steps Detailed */}
+      
       <div className="bg-white rounded-3xl p-8 border border-bb-line shadow-card space-y-8">
         <h2 className="font-serif text-2xl font-bold text-bb-ink">
           The 4-Stage Navigation Workflow
@@ -86,7 +86,7 @@ export const HowItWorksPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Responsible AI Commitments */}
+      
       <div className="bg-bb-surface-soft rounded-3xl p-8 border border-bb-line space-y-6">
         <h2 className="font-serif text-2xl font-bold text-bb-ink flex items-center gap-2">
           <ShieldCheck className="w-6 h-6 text-bb-brand" />

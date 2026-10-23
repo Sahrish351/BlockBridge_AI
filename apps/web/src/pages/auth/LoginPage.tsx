@@ -53,7 +53,7 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="min-h-[85vh] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
-        {/* Header */}
+        
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl bg-bb-brand text-white flex items-center justify-center shadow-sm">
@@ -75,7 +75,7 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Card */}
+        
         <div className="bg-white rounded-3xl p-8 border border-bb-line shadow-card space-y-6">
           {errorMessage && (
             <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-start gap-2 animate-in fade-in">
@@ -151,7 +151,7 @@ export const LoginPage: React.FC = () => {
             </div>
           </form>
 
-          {/* Quick Demo Switcher for Judges */}
+          
           <div className="pt-4 border-t border-bb-line space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-bb-ink flex items-center gap-1">

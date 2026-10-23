@@ -110,7 +110,7 @@ export interface IntakeOrchestrationState {
     | 'building_plan' 
     | 'complete' 
     | 'error';
-  stageProgress: number; // 0 to 100
+  stageProgress: number; 
   stageMessage: string;
 }
 

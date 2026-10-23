@@ -68,7 +68,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Action Plans
+
 def save_action_plan(plan: Dict[str, Any]) -> Dict[str, Any]:
     conn = get_connection()
     cursor = conn.cursor()
@@ -129,7 +129,7 @@ def get_action_plan_by_id(plan_id: str) -> Optional[Dict[str, Any]]:
         "tasks": json.loads(row["tasks_json"])
     }
 
-# Saved Resources
+
 def toggle_save_resource(user_id: str, resource_id: str) -> bool:
     conn = get_connection()
     cursor = conn.cursor()
@@ -157,7 +157,7 @@ def get_saved_resource_ids(user_id: str) -> List[str]:
     conn.close()
     return [r["resource_id"] for r in rows]
 
-# Reports
+
 def add_report(report: Dict[str, Any]) -> str:
     conn = get_connection()
     cursor = conn.cursor()
@@ -187,7 +187,7 @@ def get_reports() -> List[Dict[str, Any]]:
     conn.close()
     return [dict(r) for r in rows]
 
-# Partner Submissions
+
 def add_partner_submission(sub: Dict[str, Any]) -> str:
     conn = get_connection()
     cursor = conn.cursor()

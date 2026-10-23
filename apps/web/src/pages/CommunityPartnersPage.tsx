@@ -24,7 +24,7 @@ export const CommunityPartnersPage: React.FC = () => {
   const [submissions, setSubmissions] = useState<PartnerItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  // Form fields
+  
   const [providerName, setProviderName] = useState('');
   const [resourceName, setResourceName] = useState('');
   const [summary, setSummary] = useState('');
@@ -44,7 +44,7 @@ export const CommunityPartnersPage: React.FC = () => {
       const queue = await apiService.getAdminQueue();
       setSubmissions(queue.partnerSubmissions || []);
     } catch {
-      // Error handling
+      
     } finally {
       setIsLoadingHistory(false);
     }
@@ -74,7 +74,7 @@ export const CommunityPartnersPage: React.FC = () => {
       setSubmissionId(id);
       loadHistory();
     } catch {
-      // Error
+      
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +82,7 @@ export const CommunityPartnersPage: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
-      {/* Editorial Header */}
+      
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="flex items-center justify-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-bb-brand animate-pulse"></span>
@@ -98,7 +98,7 @@ export const CommunityPartnersPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Verification Standard Banner */}
+      
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-bb-line shadow-card space-y-4">
         <h2 className="font-serif text-xl font-bold text-bb-ink flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-bb-brand" />
@@ -120,7 +120,7 @@ export const CommunityPartnersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
+      
       <div className="flex items-center justify-between border-b border-bb-line pb-2">
         <div className="flex gap-4">
           <button
@@ -165,7 +165,7 @@ export const CommunityPartnersPage: React.FC = () => {
         )}
       </div>
 
-      {/* Tab 1: Submission Form */}
+      
       {activeTab === 'submit' && (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-bb-line shadow-card">
           {submissionId ? (
@@ -333,7 +333,7 @@ export const CommunityPartnersPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 2: Submission History & Review Status */}
+      
       {activeTab === 'history' && (
         <div className="space-y-4">
           {isLoadingHistory ? (

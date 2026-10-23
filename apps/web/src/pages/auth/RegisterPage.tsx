@@ -90,7 +90,7 @@ export const RegisterPage: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Role Selector */}
+            
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-bb-ink">
                 How will you be using BlockBridge?

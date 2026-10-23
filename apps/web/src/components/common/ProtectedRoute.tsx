@@ -46,7 +46,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           </p>
         </div>
 
-        {/* Hackathon quick-switch assistance */}
+        
         <div className="p-4 rounded-2xl bg-bb-surface-soft border border-bb-line text-xs space-y-3 text-left">
           <p className="font-semibold text-bb-ink flex items-center gap-1.5">
             <Lock className="w-4 h-4 text-bb-brand" />

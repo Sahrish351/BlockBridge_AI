@@ -15,7 +15,7 @@ from models import (
 from matching import load_resources, match_resources, ai_match_resources
 import database as db
 
-# Initialize database schema
+
 db.init_db()
 
 def require_admin_role(
@@ -41,7 +41,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -60,7 +60,7 @@ def health_check():
         "timestamp": datetime.datetime.utcnow().isoformat() + "Z"
     }
 
-# --- Resources ---
+
 @app.get("/api/resources", response_model=List[ResourceSchema])
 def get_resources(
     category: Optional[str] = Query(None),
@@ -97,7 +97,7 @@ def get_resource_by_id(id: str):
             return ResourceSchema(**r)
     raise HTTPException(status_code=404, detail="Resource not found")
 
-# --- AI Recommendations ---
+
 @app.post("/api/recommendations/ai", response_model=List[ResourceMatchSchema])
 def get_ai_recommendations(intake: IntakeRequestSchema):
     """
@@ -114,7 +114,7 @@ def get_recommendations(intake: IntakeRequestSchema):
     matches = match_resources(intake)
     return matches
 
-# --- Action Plans ---
+
 @app.post("/api/action-plans", response_model=ActionPlanSchema)
 def create_action_plan(plan_in: Dict[str, Any]):
     new_id = f"plan-{int(datetime.datetime.utcnow().timestamp())}"
@@ -157,7 +157,7 @@ def update_action_plan(id: str, plan_in: Dict[str, Any]):
     saved = db.save_action_plan(existing)
     return ActionPlanSchema(**saved)
 
-# --- Saved Resources ---
+
 @app.get("/api/saved-resources")
 def get_user_saved_resources(user_id: str = Query("demo-user")):
     return db.get_saved_resource_ids(user_id)
@@ -171,7 +171,7 @@ def toggle_user_saved_resource(payload: Dict[str, str]):
     is_saved = db.toggle_save_resource(user_id, resource_id)
     return {"resource_id": resource_id, "is_saved": is_saved}
 
-# --- Resource Reports & Partner Submissions ---
+
 @app.post("/api/resource-reports", status_code=status.HTTP_201_CREATED)
 def submit_resource_report(report: ResourceReportSchema):
     report_id = db.add_report(report.dict())

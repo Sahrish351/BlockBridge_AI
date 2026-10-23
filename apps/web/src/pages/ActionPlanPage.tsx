@@ -123,7 +123,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
   const progressPercent = Math.round((completedCount / (plan.tasks.length || 1)) * 100);
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Top Breadcrumb & Print Toolbar */}
+      
       <div className="flex items-center justify-between no-print">
         <Link
           to="/app"
@@ -151,7 +151,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           </Button>
         </div>
       </div>
-      {/* Plan Overview Card */}
+      
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-bb-line shadow-card space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-bb-line">
           <div>
@@ -174,7 +174,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
             </span>
           </div>
         </div>
-        {/* Progress bar */}
+        
         <div className="w-full bg-bb-line h-3 rounded-full overflow-hidden">
           <div
             className="bg-bb-brand h-full rounded-full transition-all duration-300"
@@ -182,7 +182,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
           ></div>
         </div>
       </div>
-      {/* Tasks List */}
+      
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-serif text-xl font-bold text-bb-ink">
@@ -208,7 +208,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                 }`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  {/* Step Order & Info */}
+                  
                   <div className="flex items-start gap-3.5 flex-1">
                     <button
                       onClick={() => handleStatusChange(task.id, isCompleted ? 'In Progress' : 'Completed')}
@@ -238,7 +238,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                       <p className="text-xs text-bb-ink-muted leading-relaxed">
                         {task.description}
                       </p>
-                      {/* Source Link */}
+                      
                       {task.source_url && (
                         <div className="pt-1">
                           <a
@@ -252,7 +252,7 @@ export const ActionPlanPage: React.FC<ActionPlanPageProps> = ({ planId: propPlan
                           </a>
                         </div>
                       )}
-                      {/* Notes Box */}
+                      
                       {editingNoteId === task.id ? (
                         <div className="pt-2 space-y-2">
                           <textarea

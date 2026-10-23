@@ -29,7 +29,6 @@ export const AdminQueuePage: React.FC = () => {
       const data = await apiService.getAdminQueue();
       setQueueData(data);
     } catch {
-      // Error
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +49,7 @@ export const AdminQueuePage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Header */}
+      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-bb-line">
         <div>
           <div className="flex items-center gap-2">
@@ -81,7 +80,7 @@ export const AdminQueuePage: React.FC = () => {
         </div>
       )}
 
-      {/* Tabs */}
+      
       <div className="flex border-b border-bb-line gap-4 text-sm font-semibold">
         <button
           onClick={() => setActiveTab('submissions')}
@@ -129,7 +128,7 @@ export const AdminQueuePage: React.FC = () => {
         </button>
       </div>
 
-      {/* Tab Content */}
+      
       {isLoading ? (
         <div className="py-12 text-center text-xs text-bb-ink-muted">
           Loading reviewer queue items...

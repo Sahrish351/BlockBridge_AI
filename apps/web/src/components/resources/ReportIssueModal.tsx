@@ -44,7 +44,6 @@ export const ReportIssueModal: React.FC<ReportIssueModalProps> = ({
         onClose();
       }, 1800);
     } catch {
-      // Handle error gracefully
     } finally {
       setIsSubmitting(false);
     }
